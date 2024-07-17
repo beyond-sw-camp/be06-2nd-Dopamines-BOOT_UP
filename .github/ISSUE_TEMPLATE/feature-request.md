@@ -1,7 +1,7 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-title: 기능 개발 이슈
+title: 작업 코드 - 개발 기능
 labels: ''
 assignees: ''
 
@@ -31,6 +31,3 @@ ex) USER_001 - 일반 회원가입
 - [ ] 세부사항1
 - [ ] 세부사항2
 - [ ] 세부사항3
-
-
-### ⏱ 예상 소요 시간
