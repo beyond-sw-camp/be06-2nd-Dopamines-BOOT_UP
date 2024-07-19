@@ -30,9 +30,16 @@ public class NoticeService {
 
     // 공지사항 생성
     @Transactional
-    public BaseResponse<NoticeRes> saveNotice(NoticeReq req) {
+    public BaseResponse<NoticeRes> saveNotice(String title, String content, String category, Boolean isPrivate, List<String> imageUrls ) {
         try {
-            Notice notice = req.toEntity();
+            Notice notice = Notice.builder()
+                    .title(title)
+                    .content(content)
+                    .date(LocalDateTime.now())
+                    .category(category)
+                    .isPrivate(isPrivate)
+                    .imageUrls(imageUrls)
+                    .build();
             Notice savedNotice = noticeRepository.save(notice);
             return new BaseResponse<>(new NoticeRes(savedNotice));
         } catch (Exception e) {

@@ -2,6 +2,7 @@ package com.example.dopamines.domain.board.notice.model.request;
 
 import com.example.dopamines.domain.board.notice.model.entity.Notice;
 import jakarta.persistence.ElementCollection;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +25,7 @@ public class NoticeReq {
     private boolean isPrivate;
 
     private List<String> imageUrls;
+
 
 
     public Notice toEntity() {
