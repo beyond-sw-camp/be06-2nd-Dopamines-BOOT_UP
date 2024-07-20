@@ -9,6 +9,9 @@ import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.infra.s3.CloudFileUploadService;
 import com.example.dopamines.global.security.CustomUserDetails;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
+@Tag(name = "자유게시판", description = "자유게시판 API")
 @RequestMapping("/free/post")
 @RequiredArgsConstructor
 public class FreePostController {
@@ -25,7 +29,19 @@ public class FreePostController {
     private final CloudFileUploadService cloudFileUploadService;
 
     @PostMapping("/create")
-    public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestPart FreePostReq req, @RequestPart MultipartFile[] files){
+    @Operation(
+            summary = "게시글 생성",
+            description = "자유게시판 게시글을 생성합니다.",
+            tags = "자유게시판 게시글 생성",
+            operationId = "createFreePost")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "게시글 생성 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "게시글 생성 실패"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<BaseResponse<?>> create(
+
+            @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestPart FreePostReq req, @RequestPart MultipartFile[] files){
         User user = customUserDetails.getUser();
         String rootType ="FREEBOARD";
         List<String> urlLists = cloudFileUploadService.uploadImages(files, rootType);

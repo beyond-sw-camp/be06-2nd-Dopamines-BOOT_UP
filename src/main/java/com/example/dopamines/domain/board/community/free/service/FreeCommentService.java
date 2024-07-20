@@ -43,26 +43,6 @@ public class FreeCommentService {
         return "자유 게시판 댓글 등록";
     }
 
-    // TODO : 내가 쓴 댓글, 대댓글 조회
-    // TODO :  대댓글 조회까지 한번에 처리
-    // TODO : 댓글 좋아요까지 구현 후 성능 테스트
-//    public List<FreeCommentReadRes> read(User user) {
-//        FreeBoard freeBoard = freeBoardRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
-//        List<FreeCommentReadRes> freeCommentReadResList = new ArrayList<>();
-//        for(FreeComment freeComment : freeBoard.getComments()){
-//            freeCommentReadResList.add(FreeCommentReadRes.builder()
-//                    .idx(freeComment.getIdx())
-//                    .freeBoardIdx(freeBoard.getIdx())
-//                    .content(freeComment.getContent())
-//                    .author(user.getNickname())
-//                    .createdAt(freeComment.getCreatedAt())
-//                    .likeCount(freeComment.getLikes().size())
-//                    .build());
-//
-//        }
-//        return freeCommentReadResList;
-//    }
-
     public String update(User user, FreeCommentUpdateReq req) {
         FreeComment freeComment = freeCommentRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
         FreePost freePost = freePostRepository.findById(freeComment.getFreePost().getIdx()).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));

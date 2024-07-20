@@ -38,18 +38,35 @@ public class AdminController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<Void> signupAdmin(
-            @Parameter(description = "관리자 회원가입 요청", required = true)
-            @RequestParam String email,
+            @Parameter(description = "이메일", required = true, example = "seungeun@example.com") @RequestParam String email,
+            @Parameter(description = "비밀번호", required = true, example = "1234") @RequestParam String password,
+            @Parameter(description = "이름", required = true, example = "seungeun") @RequestParam String name,
+            @Parameter(description = "닉네임", required = true, example = "seungeun") @RequestParam String nickname,
+            @Parameter(description = "전화번호", required = true, example = "010-1234-5678") @RequestParam String phoneNumber,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "관리자 회원가입 요청",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = AdminSignupRequest.class),
-                            examples = @ExampleObject(
-                                    name = "관리자 회원가입 요청",
-                                    value = "{\"" +
-                                            "email\": \"seungeun@example.com\"" +
-                                            "}"
-                            )
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Success Example",
+                                            value = "{\"" +
+                                                    "email\": \"admin@admin\", " +
+                                                    "password\": \"1234\", " +
+                                                    "name\": \"김관리\", " +
+                                                    "nickname\": \"관리김 \", " +
+                                                    "phoneNumber\": \"010-1234-5678\""
+                                    ),
+                                    @ExampleObject(
+                                            name = "Failure Example",
+                                            value = "{\"" +
+                                                    "email\": \"\", " +
+                                                    "password\": \"1234\", " +
+                                                    "name\": \"김관리\", " +
+                                                    "nickname\": \"관리김 \", " +
+                                                    "phoneNumber\": \"010-1234-5678\""
+                                    )
+                            }
                     )
             ) AdminSignupRequest request) {
         adminService.signupAdmin(request);
@@ -68,16 +85,27 @@ public class AdminController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<Void> assignedUser(
+            @Parameter(description = "유저 인덱스", required = true, example = "1") @RequestParam Long idx,
+            @Parameter(description = "유저 권한", required = true, example = "ROLE_ADMIN") @RequestParam String role,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "유저 권한 부여 요청",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = UserAssignedRequest.class),
-                            examples = @ExampleObject(
-                                    name = "유저 권한 부여 요청",
-                                    value = "{\"" +
-                                            "email\": \"
-                        )
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Success Example",
+                                            value = "{\"" +
+                                                    "idx\": 1, " +
+                                                    "role\": \"ROLE_ADMIN\""
+                                    ),
+                                    @ExampleObject(
+                                            name = "Failure Example",
+                                            value = "{\"" +
+                                                    "idx\": , " +
+                                                    "role\": \"ROLE_ADMIN\""
+                                    )
+                            }
                     )
             ) UserAssignedRequest request) {
         adminService.setUserStatus(request);
@@ -97,16 +125,26 @@ public class AdminController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<Void> blackListUser(
+            @Parameter(description = "유저 인덱스", required = true, example = "1") @RequestParam Long idx,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "유저 블랙리스트 등록 요청",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = UserBlackRequest.class),
-                            examples = @ExampleObject(
-                                    name = "유저 블랙리스트 등록 요청",
-                                    value = "{\"" +
-                                            "email\": \"
-                        )
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Success Example",
+                                            value = "{\"" +
+                                                    "idx\": 1" +
+                                                    "}"
+                                    ),
+                                    @ExampleObject(
+                                            name = "Failure Example",
+                                            value = "{\"" +
+                                                    "idx\": " +
+                                                    "}"
+                                    )
+                            }
                     )
             ) UserBlackRequest request) {
         adminService.setBlackList(request);

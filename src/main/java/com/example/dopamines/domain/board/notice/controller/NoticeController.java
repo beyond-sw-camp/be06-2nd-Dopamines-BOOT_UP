@@ -31,12 +31,11 @@ import io.swagger.v3.oas.annotations.Operation;
 @RequestMapping("/notices")
 public class NoticeController {
 
-
     @Autowired
     private NoticeService noticeService;
 
     // 공지사항 생성
-    @PostMapping
+    @PostMapping("/create")
     @Operation(
             summary = "공지사항 생성",
             description = "공지사항을 생성합니다.",
@@ -53,12 +52,14 @@ public class NoticeController {
             @Parameter(description = "카테고리", required = true, example = "행사 안내") @RequestParam String category,
             @Parameter(description = "공개 여부", required = true, example = "true") @RequestParam Boolean isPrivate,
             @Parameter(description = "이미지 URL", required = false, example = "http://example.com/image1.jpg") @RequestParam(required = false) List<String> imageUrls,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "공지사항 생성 요청", required = true,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "공지사항 생성 요청", required = true,
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = NoticeReq.class),
                             examples = {
-                                    @ExampleObject(name = "Success Example",
+                                    @ExampleObject(
+                                            name = "Success Example",
                                             value = "{" +
                                                     "\"title\": \"주말 특강 공지\", " +
                                                     "\"content\": \"다음 주말 헥사고널 아키텍쳐에 대한 특강이 개설됩니다..\", " +
@@ -66,7 +67,8 @@ public class NoticeController {
                                                     "\"isPrivate\": false, " +
                                                     "\"imageUrls\": [\"http://example.com/image1.jpg\", \"http://example.com/image2.jpg\"]}"
                                     ),
-                                    @ExampleObject(name = "Failure Example",
+                                    @ExampleObject(
+                                            name = "Failure Example",
                                             value = "{\"" +
                                                     "title\": \"\"," +
                                                     " \"content\": \"\"," +

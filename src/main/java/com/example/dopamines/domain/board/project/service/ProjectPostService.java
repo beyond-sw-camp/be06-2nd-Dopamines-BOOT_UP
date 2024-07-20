@@ -1,10 +1,10 @@
 package com.example.dopamines.domain.board.project.service;
 
-import com.example.dopamines.domain.board.project.model.entity.ProjectBoard;
-import com.example.dopamines.domain.board.project.model.request.ProjectBoardReq;
-import com.example.dopamines.domain.board.project.model.request.UpdateProjectBoardReq;
-import com.example.dopamines.domain.board.project.model.response.ProjectBoardRes;
-import com.example.dopamines.domain.board.project.model.response.ReadProjectBoardRes;
+import com.example.dopamines.domain.board.project.model.entity.ProjectPost;
+import com.example.dopamines.domain.board.project.model.request.ProjectPostReq;
+import com.example.dopamines.domain.board.project.model.request.ProjectPostUpdateReq;
+import com.example.dopamines.domain.board.project.model.response.ProjectPostRes;
+import com.example.dopamines.domain.board.project.model.response.ProjectPostReadRes;
 import com.example.dopamines.domain.board.project.repository.ProjectBoardRepository;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.domain.user.repository.TeamRepository;
@@ -17,14 +17,14 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ProjectBoardService {
+public class ProjectPostService {
 
     private final ProjectBoardRepository projectBoardRepository;
     private final TeamRepository teamRepository;
 
-    public ProjectBoardRes create(ProjectBoardReq req, String savedFileName) {
+    public ProjectPostRes create(ProjectPostReq req, String savedFileName) {
 
-        ProjectBoard projectBoard = ProjectBoard.builder()
+        ProjectPost projectBoard = ProjectPost.builder()
                 .title(req.getTitle())
                 .contents(req.getContents())
                 .courseNum(req.getCourseNum())
@@ -39,7 +39,7 @@ public class ProjectBoardService {
             students.add(student.getName());
         }
 
-        return ProjectBoardRes.builder()
+        return ProjectPostRes.builder()
                 .idx(projectBoard.getIdx())
                 .title(projectBoard.getTitle())
                 .contents(projectBoard.getContents())
@@ -50,19 +50,19 @@ public class ProjectBoardService {
                 .build();
     }
 
-    public ReadProjectBoardRes read(Long idx) {
+    public ProjectPostReadRes read(Long idx) {
 
-        Optional<ProjectBoard> result = projectBoardRepository.findById(idx);
+        Optional<ProjectPost> result = projectBoardRepository.findById(idx);
 
         if(result.isPresent()) {
-            ProjectBoard projectBoard = result.get();
+            ProjectPost projectBoard = result.get();
 
             List<String> students = new ArrayList<>();
             for(User student : projectBoard.getTeam().getStudents()) {
                 students.add(student.getName());
             }
 
-            return ReadProjectBoardRes.builder()
+            return ProjectPostReadRes.builder()
                     .idx(projectBoard.getIdx())
                     .title(projectBoard.getTitle())
                     .contents(projectBoard.getContents())
@@ -76,24 +76,24 @@ public class ProjectBoardService {
         }
     }
 
-    public List<ReadProjectBoardRes> readByCourseNum(Long courseNum) {
+    public List<ProjectPostReadRes> readByCourseNum(Long courseNum) {
 
-        List<ProjectBoard> projectList = projectBoardRepository.findByCourseNum(courseNum);
+        List<ProjectPost> projectList = projectBoardRepository.findByCourseNum(courseNum);
 
-        List<ReadProjectBoardRes> res = new ArrayList<>();
+        List<ProjectPostReadRes> res = new ArrayList<>();
 
-        for(ProjectBoard projectBoard : projectList) {
+        for(ProjectPost projectPost : projectList) {
             List<String> students = new ArrayList<>();
-            for(User student : projectBoard.getTeam().getStudents()) {
+            for(User student : projectPost.getTeam().getStudents()) {
                 students.add(student.getName());
             }
 
-            res.add(ReadProjectBoardRes.builder()
-                    .idx(projectBoard.getIdx())
-                    .title(projectBoard.getTitle())
-                    .contents(projectBoard.getContents())
-                    .courseNum(projectBoard.getCourseNum())
-                    .teamName(projectBoard.getTeam().getTeamName())
+            res.add(ProjectPostReadRes.builder()
+                    .idx(projectPost.getIdx())
+                    .title(projectPost.getTitle())
+                    .contents(projectPost.getContents())
+                    .courseNum(projectPost.getCourseNum())
+                    .teamName(projectPost.getTeam().getTeamName())
                     .students(students)
                     .build());
         }
@@ -101,24 +101,24 @@ public class ProjectBoardService {
         return res;
     }
 
-    public List<ReadProjectBoardRes> readAll() {
+    public List<ProjectPostReadRes> readAll() {
 
-        List<ProjectBoard> projectList = projectBoardRepository.findAll();
+        List<ProjectPost> projectList = projectBoardRepository.findAll();
 
-        List<ReadProjectBoardRes> res = new ArrayList<>();
+        List<ProjectPostReadRes> res = new ArrayList<>();
 
-        for(ProjectBoard projectBoard : projectList) {
+        for(ProjectPost projectPost : projectList) {
             List<String> students = new ArrayList<>();
-            for(User student : projectBoard.getTeam().getStudents()) {
+            for(User student : projectPost.getTeam().getStudents()) {
                 students.add(student.getName());
             }
 
-            res.add(ReadProjectBoardRes.builder()
-                    .idx(projectBoard.getIdx())
-                    .title(projectBoard.getTitle())
-                    .contents(projectBoard.getContents())
-                    .courseNum(projectBoard.getCourseNum())
-                    .teamName(projectBoard.getTeam().getTeamName())
+            res.add(ProjectPostReadRes.builder()
+                    .idx(projectPost.getIdx())
+                    .title(projectPost.getTitle())
+                    .contents(projectPost.getContents())
+                    .courseNum(projectPost.getCourseNum())
+                    .teamName(projectPost.getTeam().getTeamName())
                     .students(students)
                     .build());
         }
@@ -126,8 +126,8 @@ public class ProjectBoardService {
         return res;
     }
 
-    public ReadProjectBoardRes update(UpdateProjectBoardReq req, String savedFileName) {
-        ProjectBoard projectBoard = ProjectBoard.builder()
+    public ProjectPostReadRes update(ProjectPostUpdateReq req, String savedFileName) {
+        ProjectPost projectPost = ProjectPost.builder()
                 .idx(req.getIdx())
                 .title(req.getTitle())
                 .contents(req.getContents())
@@ -136,20 +136,20 @@ public class ProjectBoardService {
                 .team(teamRepository.findById(req.getTeamIdx()).get())
                 .build();
 
-        projectBoard = projectBoardRepository.save(projectBoard);
+        projectPost = projectBoardRepository.save(projectPost);
 
         List<String> students = new ArrayList<>();
-        for(User student : projectBoard.getTeam().getStudents()) {
+        for(User student : projectPost.getTeam().getStudents()) {
             students.add(student.getName());
         }
 
-        return ReadProjectBoardRes.builder()
-                .idx(projectBoard.getIdx())
-                .title(projectBoard.getTitle())
-                .contents(projectBoard.getContents())
-                .courseNum(projectBoard.getCourseNum())
-                .sourceUrl(projectBoard.getSourceUrl())
-                .teamName(projectBoard.getTeam().getTeamName())
+        return ProjectPostReadRes.builder()
+                .idx(projectPost.getIdx())
+                .title(projectPost.getTitle())
+                .contents(projectPost.getContents())
+                .courseNum(projectPost.getCourseNum())
+                .sourceUrl(projectPost.getSourceUrl())
+                .teamName(projectPost.getTeam().getTeamName())
                 .students(students)
                 .build();
     }

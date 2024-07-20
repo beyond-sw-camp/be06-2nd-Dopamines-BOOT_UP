@@ -7,6 +7,10 @@ import com.example.dopamines.domain.user.service.UserService;
 import com.example.dopamines.global.common.BaseException;
 import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.common.BaseResponseStatus;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Tag(name = "유저", description = "유저 API")
 @RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
@@ -25,7 +30,20 @@ public class UserController {
     private final UserEmailService emailService;
 
     @PostMapping("/signup")
-    public ResponseEntity<BaseResponse<?>> singup(@Valid @RequestBody UserSignupRequest request){
+    @Operation(
+            summary = "유저 회원가입",
+            description = "유저 회원가입을 합니다.",
+            tags = {"유저 회원가입"},
+            operationId = "signupUser"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "유저 회원가입 성공"),
+            @ApiResponse(responseCode = "400", description = "유저 회원가입 실패"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<BaseResponse<?>> signup(
+
+            @Valid @RequestBody UserSignupRequest request){
 
         UserSignupResponse signupResult = userService.signup(request);
 
