@@ -21,10 +21,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @Tag(name = "공지사항", description = "공지사항 관련 API")
@@ -46,12 +48,12 @@ public class NoticeController {
             @ApiResponse(responseCode = "400", description = "공지사항 생성 실패"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    public ResponseEntity<BaseResponse<BaseResponse<NoticeRes>>> createNotice(
+    public ResponseEntity<BaseResponse<NoticeRes>> createNotice(
             @Parameter(description = "제목", required = true, example = "주말 코딩 테스트 응시 안내") @RequestParam String title,
             @Parameter(description = "내용", required = true, example = "아래 폼을 작성하면 응시 확인이 가능합니다.") @RequestParam String content,
             @Parameter(description = "카테고리", required = true, example = "행사 안내") @RequestParam String category,
             @Parameter(description = "공개 여부", required = true, example = "true") @RequestParam Boolean isPrivate,
-            @Parameter(description = "이미지 URL", required = false, example = "http://example.com/image1.jpg") @RequestParam(required = false) List<String> imageUrls,
+            @Parameter(description = "이미지 URL", required = false, example = "http://example.com/image1.jpg") @RequestParam(required = false) MultipartFile[] imageUrls,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "공지사항 생성 요청", required = true,
                     content = @Content(
@@ -80,8 +82,9 @@ public class NoticeController {
                     )
             ) NoticeReq noticeRequestDto) {
 
-        BaseResponse<NoticeRes> createdNotice = noticeService.saveNotice(title, content, category, isPrivate, imageUrls);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<>(createdNotice));
+        BaseResponse<NoticeRes> createdNotice = noticeService.saveNotice(title, content, category, isPrivate,
+                Arrays.toString(imageUrls));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<>(createdNotice).getResult());
     }
 
     // 공지사항 조회
@@ -139,7 +142,8 @@ public class NoticeController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<BaseResponse<Page<Notice>>> getAllPrivateNotices(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "비공개 공지사항 조회 요청", required = true,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "비공개 공지사항 조회 요청", required = true,
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = NoticeReq.class),

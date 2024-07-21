@@ -14,8 +14,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,7 +30,7 @@ public class NoticeService {
 
     // 공지사항 생성
     @Transactional
-    public BaseResponse<NoticeRes> saveNotice(String title, String content, String category, Boolean isPrivate, List<String> imageUrls ) {
+    public BaseResponse<NoticeRes> saveNotice(String title, String content, String category, Boolean isPrivate, String imageUrls ) {
         try {
             Notice notice = Notice.builder()
                     .title(title)
@@ -38,7 +38,7 @@ public class NoticeService {
                     .date(LocalDateTime.now())
                     .category(category)
                     .isPrivate(isPrivate)
-                    .imageUrls(imageUrls)
+                    .imageUrls(List.of(imageUrls))
                     .build();
             Notice savedNotice = noticeRepository.save(notice);
             return new BaseResponse<>(new NoticeRes(savedNotice));

@@ -22,14 +22,14 @@ public class ProjectPostService {
     private final ProjectBoardRepository projectBoardRepository;
     private final TeamRepository teamRepository;
 
-    public ProjectPostRes create(ProjectPostReq req, String savedFileName) {
+    public ProjectPostRes create(String title, String content, Integer courseNum, Long teamIdx, String savedFileName) {
 
         ProjectPost projectBoard = ProjectPost.builder()
-                .title(req.getTitle())
-                .contents(req.getContents())
-                .courseNum(req.getCourseNum())
+                .title(title)
+                .contents(content)
+                .courseNum(courseNum)
                 .sourceUrl(savedFileName)
-                .team(teamRepository.findById(req.getTeamIdx()).get())
+                .team(teamRepository.findById(teamIdx).get())
                 .build();
 
         projectBoard = projectBoardRepository.save(projectBoard);

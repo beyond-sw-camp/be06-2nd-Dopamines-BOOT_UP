@@ -34,7 +34,7 @@ public class AdminController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "관리자 회원가입 성공"),
-            @ApiResponse(responseCode = "400", description = "��리자 회원가입 실패"),
+            @ApiResponse(responseCode = "400", description = "관리자 회원가입 실패"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<Void> signupAdmin(
