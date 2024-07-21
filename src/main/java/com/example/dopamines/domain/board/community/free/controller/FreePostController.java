@@ -39,17 +39,7 @@ public class FreePostController {
             description = "자유게시판 게시글을 생성합니다.",
             operationId = "createFreePost")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "게시글 생성 성공"),
-            @ApiResponse(responseCode = "400", description = "게시글 생성 실패"),
-            @ApiResponse(responseCode = "500", description = "서버 오류")
-    })
-    public ResponseEntity<BaseResponse<?>> create(
-            @Parameter(description = "게시글 제목", required = true, example = "게시글 제목") @RequestParam String title,
-            @Parameter(description = "게시글 내용", required = true, example = "게시글 내용") @RequestParam String content,
-            @Parameter(description = "게시글 이미지", required = false, example = "http://example.com/image2.jpg") @RequestParam MultipartFile[] files,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "게시글 생성 요청",
+            @ApiResponse(responseCode = "200", description = "게시글 생성 성공",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = FreePostReq.class),
@@ -60,7 +50,15 @@ public class FreePostController {
                                                     "\"title\": \"게시글 제목\", " +
                                                     "\"content\": \"게시글 내용\"" +
                                                     "\"files\": \"http://example.com/image2.jpg\"}"
-                                    ),
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "게시글 생성 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = FreePostReq.class),
+                            examples = {
                                     @ExampleObject(
                                             name = "Fail Example",
                                             value = "{" +
@@ -70,11 +68,18 @@ public class FreePostController {
                                     )
                             }
                     )
-            ) FreePostReq req){
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<BaseResponse<?>> create(
+            @Parameter(description = "게시글 제목", required = true, example = "게시글 제목") @RequestParam String title,
+            @Parameter(description = "게시글 내용", required = true, example = "게시글 내용") @RequestParam String content,
+            @Parameter(description = "게시글 이미지", required = false, example = "http://example.com/image2.jpg") @RequestParam MultipartFile[] files,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails){
         User user = customUserDetails.getUser();
         String rootType ="FREEBOARD";
         List<String> urlLists = cloudFileUploadService.uploadImages(files, rootType);
-        String result = freePostService.create(user, req, urlLists);
+        String result = freePostService.create(user,title,content,urlLists);
         return ResponseEntity.ok(new BaseResponse<>(result));
     }
 
@@ -84,15 +89,7 @@ public class FreePostController {
             description = "자유게시판 게시글을 조회합니다.",
             operationId = "readFreePost")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "게시글 조회 성공"),
-            @ApiResponse(responseCode = "400", description = "게시글 조회 실패"),
-            @ApiResponse(responseCode = "500", description = "서버 오류")
-    })
-    public ResponseEntity<BaseResponse<?>> read(
-            @Parameter(description = "게시글 인덱스", required = true, example = "1") @RequestParam Long idx,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "게시글 조회 요청",
+            @ApiResponse(responseCode = "200", description = "게시글 조회 성공",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = FreePostReadRes.class),
@@ -101,7 +98,15 @@ public class FreePostController {
                                             name = "Success Example",
                                             value = "{\"" +
                                                     "idx\": 1}"
-                                    ),
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "게시글 조회 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = FreePostReadRes.class),
+                            examples = {
                                     @ExampleObject(
                                             name = "Failure Example",
                                             value = "{\"" +
@@ -109,7 +114,12 @@ public class FreePostController {
                                     )
                             }
                     )
-            ) FreePostReadRes req){
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<BaseResponse<?>> read(
+            @Parameter(description = "게시글 인덱스", required = true, example = "1") @RequestParam Long idx,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails){
         User user = customUserDetails.getUser();
         FreePostReadRes response = freePostService.read(idx);
 
@@ -122,16 +132,7 @@ public class FreePostController {
             description = "자유게시판 게시글을 전체 조회합니다.",
             operationId = "readAllFreePost")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "게시글 전체 조회 성공"),
-            @ApiResponse(responseCode = "400", description = "게시글 전체 조회 실패"),
-            @ApiResponse(responseCode = "500", description = "서버 오류")
-    })
-    public ResponseEntity<BaseResponse<?>> readAll(
-            @Parameter(description = "페이지", required = true, example = "1") @RequestParam Integer page,
-            @Parameter(description = "사이즈", required = true, example = "10") @RequestParam Integer size,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "게시글 전체 조회 요청",
+            @ApiResponse(responseCode = "200", description = "게시글 전체 조회 성공",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = FreePostRes.class),
@@ -141,7 +142,15 @@ public class FreePostController {
                                             value = "{\"" +
                                                     "page\": 1, " +
                                                     "size\": 10}"
-                                    ),
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "게시글 전체 조회 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = FreePostRes.class),
+                            examples = {
                                     @ExampleObject(
                                             name = "Failure Example",
                                             value = "{\"" +
@@ -150,7 +159,13 @@ public class FreePostController {
                                     )
                             }
                     )
-            ) FreePostRes req){
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<BaseResponse<?>> readAll(
+            @Parameter(description = "페이지", required = true, example = "1") @RequestParam Integer page,
+            @Parameter(description = "사이즈", required = true, example = "10") @RequestParam Integer size,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails){
         User user = customUserDetails.getUser();
         List<FreePostRes> response = freePostService.readAll(page,size);
         return ResponseEntity.ok(new BaseResponse<>(response));
@@ -162,8 +177,38 @@ public class FreePostController {
             description = "자유게시판 게시글을 수정합니다.",
             operationId = "updateFreePost")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "게시글 수정 성공"),
-            @ApiResponse(responseCode = "400", description = "게시글 수정 실패"),
+            @ApiResponse(responseCode = "200", description = "게시글 수정 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = FreePostRes.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Success Example",
+                                            value = "{" +
+                                                    "\"idx\": 1}" +
+                                                    "\"title\": \"게시글 제목\", " +
+                                                    "\"content\": \"게시글 내용\"" +
+                                                    "\"files\": \"http://example.com/image2.jpg\"}"
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "게시글 수정 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = FreePostRes.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Fail Example",
+                                            value = "{" +
+                                                    "\"idx\": 0}" +
+                                                    "\"title\": \"\", " +
+                                                    "\"content\": \"\"," +
+                                                    "\"files\": \"\"}"
+                                    )
+                            }
+                    )
+            ),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<BaseResponse<?>> update(
@@ -171,36 +216,11 @@ public class FreePostController {
             @Parameter(description = "게시글 제목", required = true, example = "게시글 제목") @RequestParam String title,
             @Parameter(description = "게시글 내용", required = true, example = "게시글 내용") @RequestParam String content,
             @Parameter(description = "게시글 이미지", required = false, example = "http://example.com/image2.jpg") @RequestPart MultipartFile[] files,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "게시글 수정 요청",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = FreePostUpdateReq.class),
-                            examples = {
-                                    @ExampleObject(
-                                            name = "Success Example",
-                                            value = "{" +
-                                                    "\"idx\": 1, " +
-                                                    "\"title\": \"게시글 제목\", " +
-                                                    "\"content\": \"게시글 내용\"" +
-                                                    "\"files\": \"http://example.com/image2.jpg\"}"
-                                    ),
-                                    @ExampleObject(
-                                            name = "Fail Example",
-                                            value = "{" +
-                                                    "\"idx\": 1, " +
-                                                    "\"title\": \"\", " +
-                                                    "\"content\": \"\"," +
-                                                    "\"files\": \"\"}"
-                                    )
-                            }
-                    )
-            ) FreePostUpdateReq req){
+            @AuthenticationPrincipal CustomUserDetails customUserDetails){
         User user = customUserDetails.getUser();
         String rootType ="FREEBOARD";
         List<String> urlLists = cloudFileUploadService.uploadImages(files, rootType);
-        FreePostRes response = freePostService.update(user,req,urlLists);
+        FreePostRes response = freePostService.update(user, idx, title, content, urlLists);
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
@@ -210,33 +230,37 @@ public class FreePostController {
             description = "자유게시판 게시글을 삭제합니다.",
             operationId = "deleteFreePost")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "게시글 삭제 성공"),
-            @ApiResponse(responseCode = "400", description = "게시글 삭제 실패"),
-            @ApiResponse(responseCode = "500", description = "서버 오류")
-    })
-    public ResponseEntity<BaseResponse<?>> delete(
-            @Parameter(description = "게시글 인덱스", required = true, example = "1") @RequestParam Long idx,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "게시글 삭제 요청",
+            @ApiResponse(responseCode = "200", description = "게시글 삭제 성공",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = FreePostUpdateReq.class),
+                            schema = @Schema(implementation = FreePostRes.class),
                             examples = {
                                     @ExampleObject(
                                             name = "Success Example",
                                             value = "{" +
                                                     "\"idx\": 1}"
-                                    ),
-                                    @ExampleObject(
-                                            name = "Fail Example",
-                                            value = "{" +
-                                                    "\"idx\": 0}"
                                     )
                             }
                     )
-            ) FreePostUpdateReq req
-            ){
+            ),
+            @ApiResponse(responseCode = "400", description = "게시글 삭제 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = FreePostRes.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Fail Example",
+                                            value = "{" +
+                                                    "\"idx\": 1}"
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<BaseResponse<?>> delete(
+            @Parameter(description = "게시글 인덱스", required = true, example = "1") @RequestParam Long idx,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails){
         User user = customUserDetails.getUser();
         String response = freePostService.delete(user,idx);
         return ResponseEntity.ok(new BaseResponse<>(response));

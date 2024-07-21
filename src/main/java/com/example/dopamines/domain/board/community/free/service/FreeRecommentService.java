@@ -27,17 +27,17 @@ public class FreeRecommentService {
 
 
     @Transactional
-    public String create(User user, FreeRecommentReq req) {
-        FreeComment freeComment = freeCommentRepository.findById(req.getCommentIdx()).orElseThrow(()-> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
+    public String create(User user, Long idx, String content) {
+        FreeComment freeComment = freeCommentRepository.findById(idx).orElseThrow(()-> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
         FreePost freePost = freePostRepository.findById(freeComment.getFreePost().getIdx()).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
-        if(req.getContent() == null){
+        if(content == null){
             throw new BaseException(COMMUNITY_CONTENT_NOT_FOUND);
         }
 
         freeRecommentRepository.save(FreeRecomment.builder()
                 .freeComment(freeComment)
-                .content(req.getContent())
+                .content(content)
                 .user(user)
                 .createdAt(LocalDateTime.now())
                 .build()

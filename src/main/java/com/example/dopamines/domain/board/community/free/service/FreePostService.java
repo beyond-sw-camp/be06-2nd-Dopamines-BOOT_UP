@@ -32,17 +32,17 @@ public class FreePostService {
     private final FreePostRepository freePostRepository;
 
     @Transactional
-    public String create(User user, FreePostReq req, List<String> imageUrlList) {
+    public String create(User user, String title, String content, List<String> imageUrlList) {
 
-        if(req.getTitle() == null){
+        if(title == null){
             throw new BaseException(COMMUNITY_TITLE_NOT_FOUND);
         }
-        if(req.getContent() == null){
+        if(content == null){
             throw new BaseException(COMMUNITY_CONTENT_NOT_FOUND);
         }
         FreePost freePost = freePostRepository.save(FreePost.builder()
-                .title(req.getTitle())
-                .content(req.getContent())
+                .title(title)
+                .content(content)
                 .user(user)
                 .imageUrlList(imageUrlList)
                 .createdAt(LocalDateTime.now())
@@ -108,14 +108,14 @@ public class FreePostService {
         return freePostResList;
     }
 
-    public FreePostRes update(User user, FreePostUpdateReq req, List<String> imageUrlList) {
-        FreePost freePost = freePostRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+    public FreePostRes update(User user, Long idx, String title, String content, List<String> imageUrlList) {
+        FreePost freePost = freePostRepository.findById(idx).orElseThrow(()-> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
         if(freePost.getUser().getIdx()!= user.getIdx()){
             throw new BaseException(COMMUNITY_USER_NOT_AUTHOR);
         }
-        freePost.setTitle(req.getTitle());
-        freePost.setContent(req.getContent());
+        freePost.setTitle(title);
+        freePost.setContent(content);
         freePost.setImageUrlList(imageUrlList);
         freePost.setCreatedAt(LocalDateTime.now());
 
