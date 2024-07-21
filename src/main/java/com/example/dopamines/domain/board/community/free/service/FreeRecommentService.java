@@ -46,8 +46,8 @@ public class FreeRecommentService {
         return "자유 게시판 대댓글 등록";
     }
 
-    public String update(User user, FreeRecommentUpdateReq req) {
-        FreeRecomment freeRecomment = freeRecommentRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_RECOMMENT_NOT_FOUND));
+    public String update(User user, Long idx, String content) {
+        FreeRecomment freeRecomment = freeRecommentRepository.findById(idx).orElseThrow(()-> new BaseException(COMMUNITY_RECOMMENT_NOT_FOUND));
         FreeComment freeComment = freeCommentRepository.findById(freeRecomment.getFreeComment().getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
         FreePost freePost = freePostRepository.findById(freeComment.getFreePost().getIdx()).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
@@ -55,7 +55,7 @@ public class FreeRecommentService {
             throw  new BaseException(COMMUNITY_USER_NOT_AUTHOR);
         }
         else{
-            freeRecomment.setContent(req.getContent());
+            freeRecomment.setContent(content);
             freeRecomment.setCreatedAt(LocalDateTime.now());
 
             freeRecommentRepository.save(freeRecomment);

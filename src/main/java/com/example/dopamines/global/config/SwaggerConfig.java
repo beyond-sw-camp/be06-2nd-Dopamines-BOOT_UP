@@ -10,7 +10,6 @@ import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 @Configuration
 @OpenAPIDefinition(
         security = @SecurityRequirement(name = "bearerAuth")
@@ -29,5 +28,4 @@ public class SwaggerConfig {
                 .components(new Components())
                 .info(new Info().title("Dopamines").description("good").version("1.0.0"));
     }
-
 }

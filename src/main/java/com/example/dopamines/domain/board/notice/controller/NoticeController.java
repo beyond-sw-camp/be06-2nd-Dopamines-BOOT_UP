@@ -142,6 +142,8 @@ public class NoticeController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<BaseResponse<Page<Notice>>> getAllPrivateNotices(
+            @Parameter(description = "페이지 번호", required = true, example = "0") @RequestParam int page,
+            @Parameter(description = "페이지 크기", required = true, example = "10") @RequestParam int size,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "비공개 공지사항 조회 요청", required = true,
                     content = @Content(
@@ -155,8 +157,8 @@ public class NoticeController {
                                                     "}"
                                     ),
                                     @ExampleObject(name = "Failure Example",
-                                            value = "{\"" +
-                                                    "page\": 0," +
+                                            value = "{" +
+                                                    "\"page\": 0," +
                                                     " \"size\": 0" +
                                                     "}"
                                     )
@@ -179,6 +181,8 @@ public class NoticeController {
     })
     public ResponseEntity<BaseResponse<Page<Notice>>> getNoticesByCategory(
             @Parameter(description = "카테고리", required = true, example = "행사 안내") @RequestParam String category,
+            @Parameter(description = "페이지 번호", required = true, example = "0") @RequestParam int page,
+            @Parameter(description = "페이지 크기", required = true, example = "10") @RequestParam int size,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "카테고리별 공지사항 조회 요청", required = true,
                     content = @Content(
                             mediaType = "application/json",
@@ -214,8 +218,10 @@ public class NoticeController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<BaseResponse<Page<Notice>>> getNoticesByDateRange(
-            @Parameter(description = "시작 날짜", required = true, example = "2022-01-01T00:00:00")
-            @RequestParam String startDate, @RequestParam String endDate,
+            @Parameter(description = "시작 날짜", required = true, example = "2022-01-01T00:00:00") @RequestParam String startDate,
+            @Parameter(description = "종료 날짜", required = true, example = "2022-01-31T23:59:59") @RequestParam String endDate,
+            @Parameter(description = "페이지 번호", required = true, example = "0") @RequestParam int page,
+            @Parameter(description = "페이지 크기", required = true, example = "10") @RequestParam int size,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "날짜별 공지사항 조회 요청", required = true,
                     content = @Content(
@@ -261,11 +267,10 @@ public class NoticeController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public Page<Notice> findNoticesByCriteria(
-            @Parameter(description = "비공개 여부", required = false, example = "true")
-            @RequestParam(required = false) Boolean isPrivate,
-            @RequestParam(required = false) String category,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @Parameter(description = "비공개 여부", required = false, example = "true") @RequestParam(required = false) Boolean isPrivate,
+            @Parameter(description = "카테고리", required = false, example = "행사 안내") @RequestParam(required = false) String category,
+            @Parameter(description = "페이지 번호", required = true, example = "0") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "페이지 크기", required = true, example = "10") @RequestParam(defaultValue = "10") int size,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "검색 조건에 따른 공지사항 조회 요청", required = true,
                     content = @Content(
@@ -306,9 +311,8 @@ public class NoticeController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public Page<Notice> findNoticesByTitleAndContent(
-            @Parameter(description = "제목", required = false, example = "주말 특강 공지")
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) String content,
+            @Parameter(description = "제목", required = false, example = "주말 특강 공지") @RequestParam(required = false) String title,
+            @Parameter(description = "내용", required = false, example = "다음 주말 헥사고널 아키텍쳐에 대한 특강이 개설됩니다.") @RequestParam(required = false) String content,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "제목 및 내용 검색 요청", required = true,
                     content = @Content(
@@ -352,6 +356,11 @@ public class NoticeController {
     })
     public ResponseEntity<BaseResponse<Notice>> updateNotice(
             @Parameter(description = "공지사항 ID", required = true, example = "1") @PathVariable Long id,
+            @Parameter(description = "제목", required = true, example = "주말 코딩 테스트 응시 안내") @RequestParam String title,
+            @Parameter(description = "내용", required = true, example = "아래 폼을 작성하면 응시 확인이 가능합니다.") @RequestParam String content,
+            @Parameter(description = "카테고리", required = true, example = "행사 안내") @RequestParam String category,
+            @Parameter(description = "공개 여부", required = true, example = "true") @RequestParam Boolean isPrivate,
+            @Parameter(description = "이미지 URL", required = false, example = "http://example.com/image1.jpg") @RequestParam(required = false) MultipartFile[] imageUrls,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "공지사항 수정 요청", required = true,
                     content = @Content(
                             mediaType = "application/json",

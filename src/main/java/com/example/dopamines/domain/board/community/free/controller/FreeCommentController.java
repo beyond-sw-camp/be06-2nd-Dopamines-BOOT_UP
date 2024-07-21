@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@Tag(name = "자유게시판 댓글", description = "자유게시판 댓글 API")
+@Tag(name = "자유게시판", description = "자유게시판 댓글 API")
 @RequestMapping("/free/comment")
 @RequiredArgsConstructor
 public class FreeCommentController {
