@@ -29,21 +29,10 @@ public class AdminController {
     @Operation(
             summary = "관리자 회원가입",
             description = "관리자 회원가입을 합니다.",
-            tags = {"관리자 회원가입"},
             operationId = "signupAdmin"
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "관리자 회원가입 성공"),
-            @ApiResponse(responseCode = "400", description = "관리자 회원가입 실패"),
-            @ApiResponse(responseCode = "500", description = "서버 오류")
-    })
-    public ResponseEntity<Void> signupAdmin(
-            @Parameter(description = "이메일", required = true, example = "seungeun@example.com") @RequestParam String email,
-            @Parameter(description = "비밀번호", required = true, example = "1234") @RequestParam String password,
-            @Parameter(description = "이름", required = true, example = "seungeun") @RequestParam String name,
-            @Parameter(description = "닉네임", required = true, example = "seungeun") @RequestParam String nickname,
-            @Parameter(description = "전화번호", required = true, example = "010-1234-5678") @RequestParam String phoneNumber,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "관리자 회원가입 요청",
+            @ApiResponse(responseCode = "200", description = "관리자 회원가입 성공",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = AdminSignupRequest.class),
@@ -51,44 +40,48 @@ public class AdminController {
                                     @ExampleObject(
                                             name = "Success Example",
                                             value = "{\"" +
-                                                    "email\": \"admin@admin\", " +
-                                                    "password\": \"1234\", " +
-                                                    "name\": \"김관리\", " +
-                                                    "nickname\": \"관리김 \", " +
-                                                    "phoneNumber\": \"010-1234-5678\""
-                                    ),
+                                                    "email\": \"" +
+                                                    "password\": \"" +
+                                                    "name\": \"" +
+                                                    "nickname\": \"" +
+                                                    "phoneNumber\": \""
+                                            )})
+            ),
+            @ApiResponse(responseCode = "400", description = "관리자 회원가입 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = AdminSignupRequest.class),
+                            examples = {
                                     @ExampleObject(
                                             name = "Failure Example",
                                             value = "{\"" +
-                                                    "email\": \"\", " +
-                                                    "password\": \"1234\", " +
-                                                    "name\": \"김관리\", " +
-                                                    "nickname\": \"관리김 \", " +
-                                                    "phoneNumber\": \"010-1234-5678\""
-                                    )
-                            }
-                    )
-            ) AdminSignupRequest request) {
-        adminService.signupAdmin(request);
+                                                    "email\": \"" +
+                                                    "password\": \"" +
+                                                    "name\": \"" +
+                                                    "nickname\": \"" +
+                                                    "phoneNumber\": \""
+                                            )})
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<Void> signupAdmin(
+            @Parameter(description = "이메일", required = true, example = "superAdmin@example.com") @RequestParam String email,
+            @Parameter(description = "비밀번호", required = true, example = "1234") @RequestParam String password,
+            @Parameter(description = "이름", required = true, example = "admin kim") @RequestParam String name,
+            @Parameter(description = "닉네임", required = true, example = "super Admin") @RequestParam String nickname,
+            @Parameter(description = "전화번호", required = true, example = "010-1234-5678") @RequestParam String phoneNumber
+    ) {
+        adminService.signupAdmin(new AdminSignupRequest(email, password, name, nickname, phoneNumber));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/assign")
     @Operation(
-            summary = "유저 권한 부여",
-            description = "유저에게 권한을 부여합니다.",
-            tags = {"유저 권한 부여"},
+            summary = "사용자 권한 부여",
+            description = "사용자에게 이용 권한을 부여합니다.",
             operationId = "assign")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "유저 권한 부여 성공"),
-            @ApiResponse(responseCode = "400", description = "유저 권한 부여 실패"),
-            @ApiResponse(responseCode = "500", description = "서버 오류")
-    })
-    public ResponseEntity<Void> assignedUser(
-            @Parameter(description = "유저 인덱스", required = true, example = "1") @RequestParam Long idx,
-            @Parameter(description = "유저 권한", required = true, example = "ROLE_ADMIN") @RequestParam String role,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "유저 권한 부여 요청",
+            @ApiResponse(responseCode = "200", description = "유저 권한 부여 성공",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = UserAssignedRequest.class),
@@ -96,19 +89,35 @@ public class AdminController {
                                     @ExampleObject(
                                             name = "Success Example",
                                             value = "{\"" +
-                                                    "idx\": 1, " +
-                                                    "role\": \"ROLE_ADMIN\""
-                                    ),
-                                    @ExampleObject(
-                                            name = "Failure Example",
-                                            value = "{\"" +
-                                                    "idx\": , " +
-                                                    "role\": \"ROLE_ADMIN\""
+                                                    "idx\": 1," +
+                                                    "courseNum\": 6" +
+                                                    "}"
                                     )
                             }
                     )
-            ) UserAssignedRequest request) {
-        adminService.setUserStatus(request);
+            ),
+            @ApiResponse(responseCode = "400", description = "유저 권한 부여 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UserAssignedRequest.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Failure Example",
+                                            value = "{\"" +
+                                                    "idx\": 1," +
+                                                    "courseNum\": 0" +
+                                                    "}"
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<Void> assignedUser(
+            @Parameter(description = "사용자 인덱스", required = true, example = "1") @RequestParam Long idx,
+            @Parameter(description = "사용자 기수", required = true, example = "6") @RequestParam Integer courseNum
+            ) {
+        adminService.setUserStatus(new UserAssignedRequest(idx, courseNum));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -116,18 +125,10 @@ public class AdminController {
     @Operation(
             summary = "유저 블랙리스트 등록",
             description = "유저를 블랙리스트에 등록합니다.",
-            tags = {"유저 블랙리스트 등록"},
             operationId = "blackListUser"
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "유저 블랙리스트 등록 성공"),
-            @ApiResponse(responseCode = "400", description = "유저 블랙리스트 등록 실패"),
-            @ApiResponse(responseCode = "500", description = "서버 오류")
-    })
-    public ResponseEntity<Void> blackListUser(
-            @Parameter(description = "유저 인덱스", required = true, example = "1") @RequestParam Long idx,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "유저 블랙리스트 등록 요청",
+            @ApiResponse(responseCode = "200", description = "유저 블랙리스트 등록 성공",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = UserBlackRequest.class),
@@ -137,7 +138,15 @@ public class AdminController {
                                             value = "{\"" +
                                                     "idx\": 1" +
                                                     "}"
-                                    ),
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "유저 블랙리스트 등록 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UserBlackRequest.class),
+                            examples = {
                                     @ExampleObject(
                                             name = "Failure Example",
                                             value = "{\"" +
@@ -146,8 +155,13 @@ public class AdminController {
                                     )
                             }
                     )
-            ) UserBlackRequest request) {
-        adminService.setBlackList(request);
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<Void> blackListUser(
+            @Parameter(description = "유저 인덱스", required = true, example = "1") @RequestParam Long idx
+            ) {
+        adminService.setBlackList(new UserBlackRequest(idx));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

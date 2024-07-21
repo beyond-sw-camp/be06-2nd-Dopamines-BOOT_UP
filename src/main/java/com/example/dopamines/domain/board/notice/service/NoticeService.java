@@ -87,12 +87,12 @@ public class NoticeService {
 
     // 공지사항 수정
     @Transactional
-    public NoticeRes updateNotice(Long id, NoticeReq req) {
+    public NoticeRes updateNotice(Long id, String title, String content, String category, Boolean isPrivate, String imageUrls) {
         try {
 
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.NOTICE_NOT_FOUND));
-        updateNoticeDetails(notice, req);
+        updateNoticeDetails(id, title, content, category, isPrivate, imageUrls);
         Notice savedNotice = noticeRepository.save(notice);
         return convertToNoticeResponseDto(savedNotice);
         } catch (Exception e) {
@@ -111,11 +111,14 @@ public class NoticeService {
                 notice.getImageUrls());
     }
 
-    private NoticeRes updateNoticeDetails(Notice notice, NoticeReq noticeDetails) {
-        notice.setTitle(noticeDetails.getTitle());
-        notice.setContent(noticeDetails.getContent());
-        notice.setCategory(noticeDetails.getCategory());
-        notice.setPrivate(noticeDetails.isPrivate());
+    private NoticeRes updateNoticeDetails(Long id, String title, String content, String category, Boolean isPrivate, String imageUrls) {
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.NOTICE_NOT_FOUND));
+        notice.setTitle(title);
+        notice.setContent(content);
+        notice.setCategory(category);
+        notice.setPrivate(isPrivate);
+        notice.setImageUrls(List.of(imageUrls));
         Notice savedNotice = noticeRepository.save(notice);
         return new NoticeRes(savedNotice);
     }

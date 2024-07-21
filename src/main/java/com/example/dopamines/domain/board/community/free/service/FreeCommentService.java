@@ -25,16 +25,16 @@ public class FreeCommentService {
     private final FreeRecommentRepository freeRecommentRepository;
 
     @Transactional
-    public String create(User user, FreeCommentReq req) {
-        FreePost freePost = freePostRepository.findById(req.getIdx()).orElseThrow(()->new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+    public String create(User user, Long idx,String content) {
+        FreePost freePost = freePostRepository.findById(idx).orElseThrow(()->new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
-        if(req.getContent() == null){
+        if(content == null){
             throw new BaseException(COMMUNITY_CONTENT_NOT_FOUND);
         }
 
         freeCommentRepository.save(FreeComment.builder()
                 .freePost(freePost)
-                .content(req.getContent())
+                .content(content)
                 .user(user)
                 .createdAt(LocalDateTime.now())
                 .build()
@@ -43,15 +43,15 @@ public class FreeCommentService {
         return "자유 게시판 댓글 등록";
     }
 
-    public String update(User user, FreeCommentUpdateReq req) {
-        FreeComment freeComment = freeCommentRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
+    public String update(User user, Long idx, String content) {
+        FreeComment freeComment = freeCommentRepository.findById(idx).orElseThrow(()-> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
         FreePost freePost = freePostRepository.findById(freeComment.getFreePost().getIdx()).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
         if (freeComment.getUser().getIdx() != user.getIdx()){
             throw  new BaseException(COMMUNITY_USER_NOT_AUTHOR);
         }
         else{
-            freeComment.setContent(req.getContent());
+            freeComment.setContent(content);
             freeComment.setCreatedAt(LocalDateTime.now());
 
             freeCommentRepository.save(freeComment);

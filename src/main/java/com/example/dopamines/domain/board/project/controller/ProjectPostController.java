@@ -44,7 +44,6 @@ public class ProjectPostController {
     @Operation(
             summary = "프로젝트 게시글 생성",
             description = "프로젝트게시판 게시글을 생성합니다.",
-            tags = "프로젝트게시판 게시글 생성",
             operationId = "createProjectPost")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "프로젝트 게시글 생성 성공"),
@@ -56,7 +55,7 @@ public class ProjectPostController {
             @Parameter(description = "프로젝트 내용", required = true, example = "한화 시스템 커뮤니티 게시판") @RequestParam String content,
             @Parameter(description = "기수", required = true, example = "6") @RequestParam Integer courseNum,
             @Parameter(description = "팀 인덱스", required = true, example = "5") @RequestParam Long teamIdx,
-            @Parameter(description = "프로젝트 이미지", required = true, example = "http://example.com/image1.jpg") @RequestParam MultipartFile[] files,
+            @Parameter(description = "프로젝트 이미지", required = false, example = "http://example.com/image1.jpg") @RequestParam MultipartFile[] files,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                 description = "프로젝트 게시글 생성 요청", required = true,
                     content = @Content(
@@ -98,7 +97,6 @@ public class ProjectPostController {
     @Operation(
             summary = "프로젝트 게시글 조회",
             description = "프로젝트게시판 게시글을 조회합니다.",
-            tags = "프로젝트게시판 게시글 조회",
             operationId = "readProjectPost")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "프로젝트 게시글 조회 성공"),
@@ -138,7 +136,6 @@ public class ProjectPostController {
     @Operation(
             summary = "프로젝트 기수별 게시글 조회",
             description = "프로젝트게시판 게시글을 조회합니다.",
-            tags = "프로젝트게시판 게시글 조회",
             operationId = "readProjectPostByCourseNum")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "프로젝트 게시글 조회 성공"),
@@ -182,7 +179,6 @@ public class ProjectPostController {
     @Operation(
             summary = "프로젝트 게시글 전체 조회",
             description = "프로젝트게시판 게시글을 전체 조회합니다.",
-            tags = "프로젝트게시판 게시글 전체 조회",
             operationId = "readAllProjectPost")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "프로젝트 게시글 전체 조회 성공"),
@@ -223,7 +219,6 @@ public class ProjectPostController {
     @Operation(
             summary = "프로젝트 게시글 수정",
             description = "프로젝트게시판 게시글을 수정합니다.",
-            tags = "프로젝트게시판 게시글 수정",
             operationId = "updateProjectPost")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "프로젝트 게시글 수정 성공"),
@@ -267,7 +262,6 @@ public class ProjectPostController {
     @Operation(
             summary = "프로젝트 게시글 삭제",
             description = "프로젝트게시판 게시글을 삭제합니다.",
-            tags = "프로젝트게시판 게시글 삭제",
             operationId = "deleteProjectPost")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "프로젝트 게시글 삭제 성공"),

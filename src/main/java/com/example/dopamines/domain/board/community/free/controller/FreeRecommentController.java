@@ -26,7 +26,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/free/recomment")
-@Tag(name = "자유게시판", description = "자유게시판 대댓글 API")
+@Tag(name = "자유게시판", description = "자유게시판 API")
 @RequiredArgsConstructor
 public class FreeRecommentController {
     private final FreeRecommentService freeRecommentService;
@@ -35,7 +35,6 @@ public class FreeRecommentController {
     @Operation(
             summary = "대댓글 생성",
             description = "자유게시판 대댓글을 생성합니다.",
-            tags = "자유게시판 대댓글 생성",
             operationId = "createFreeRecomment")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "대댓글 생성 성공"),
@@ -77,7 +76,6 @@ public class FreeRecommentController {
     @Operation(
             summary = "대댓글 수정",
             description = "자유게시판 대댓글을 수정합니다.",
-            tags = "자유게시판 대댓글 수정",
             operationId = "updateFreeRecomment")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "대댓글 수정 성공"),
@@ -98,7 +96,6 @@ public class FreeRecommentController {
     @Operation(
             summary = "대댓글 삭제",
             description = "자유게시판 대댓글을 삭제합니다.",
-            tags = "자유게시판 대댓글 삭제",
             operationId = "deleteFreeRecomment")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "대댓글 삭제 성공"),

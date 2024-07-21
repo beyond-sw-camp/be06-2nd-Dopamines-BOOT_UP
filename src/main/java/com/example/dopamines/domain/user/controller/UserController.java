@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Tag(name = "유저", description = "유저 API")
+@Tag(name = "회원", description = "회원 API")
 @RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
@@ -31,9 +31,8 @@ public class UserController {
 
     @PostMapping("/signup")
     @Operation(
-            summary = "유저 회원가입",
-            description = "유저 회원가입을 합니다.",
-            tags = {"유저 회원가입"},
+            summary = "사용자 회원가입",
+            description = "사용자 회원가입을 합니다.",
             operationId = "signupUser"
     )
     @ApiResponses(value = {

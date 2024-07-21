@@ -8,6 +8,7 @@ import com.example.dopamines.domain.board.community.open.service.OpenPostService
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.security.CustomUserDetails;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,6 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/open/post")
+@Tag(name = "공개게시판", description = "공개 게시판 관련 API")
 @RequiredArgsConstructor
 public class OpenPostController {
     private final OpenPostService openPostService;

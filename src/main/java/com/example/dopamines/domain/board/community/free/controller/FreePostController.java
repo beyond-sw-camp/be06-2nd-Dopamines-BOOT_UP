@@ -37,7 +37,6 @@ public class FreePostController {
     @Operation(
             summary = "게시글 생성",
             description = "자유게시판 게시글을 생성합니다.",
-            tags = "자유게시판 게시글 생성",
             operationId = "createFreePost")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "게시글 생성 성공"),
@@ -83,7 +82,6 @@ public class FreePostController {
     @Operation(
             summary = "게시글 조회",
             description = "자유게시판 게시글을 조회합니다.",
-            tags = "자유게시판 게시글 조회",
             operationId = "readFreePost")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "게시글 조회 성공"),
@@ -122,7 +120,6 @@ public class FreePostController {
     @Operation(
             summary = "게시글 전체 조회",
             description = "자유게시판 게시글을 전체 조회합니다.",
-            tags = "자유게시판 게시글 전체 조회",
             operationId = "readAllFreePost")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "게시글 전체 조회 성공"),
@@ -163,7 +160,6 @@ public class FreePostController {
     @Operation(
             summary = "게시글 수정",
             description = "자유게시판 게시글을 수정합니다.",
-            tags = "자유게시판 게시글 수정",
             operationId = "updateFreePost")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "게시글 수정 성공"),
@@ -212,7 +208,6 @@ public class FreePostController {
     @Operation(
             summary = "게시글 삭제",
             description = "자유게시판 게시글을 삭제합니다.",
-            tags = "자유게시판 게시글 삭제",
             operationId = "deleteFreePost")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "게시글 삭제 성공"),

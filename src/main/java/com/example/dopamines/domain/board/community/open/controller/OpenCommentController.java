@@ -24,7 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/open/comment")
-@Tag(name = "공개게시판", description = "공개게시판 댓글 API")
+@Tag(name = "공개게시판", description = "공개 게시판 관련 API")
 @RequiredArgsConstructor
 public class OpenCommentController {
     private final OpenCommentService openCommentService;
@@ -33,7 +33,6 @@ public class OpenCommentController {
     @Operation(
             summary = "댓글 생성",
             description = "공개게시판 댓글을 생성합니다.",
-            tags = "공개게시판 댓글 생성",
             operationId = "createOpenComment")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "댓글 생성 성공"),
@@ -75,7 +74,6 @@ public class OpenCommentController {
     @Operation(
             summary = "댓글 조회",
             description = "공개게시판 댓글을 조회합니다.",
-            tags = "공개게시판 댓글 조회",
             operationId = "readOpenComment")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "댓글 조회 성공"),
@@ -115,7 +113,6 @@ public class OpenCommentController {
     @Operation(
             summary = "댓글 수정",
             description = "공개게시판 댓글을 수정합니다.",
-            tags = "공개게시판 댓글 수정",
             operationId = "updateOpenComment")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "댓글 수정 성공"),
@@ -157,7 +154,6 @@ public class OpenCommentController {
     @Operation(
             summary = "댓글 삭제",
             description = "공개게시판 댓글을 삭제합니다.",
-            tags = "공개게시판 댓글 삭제",
             operationId = "deleteOpenComment")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "댓글 삭제 성공"),
