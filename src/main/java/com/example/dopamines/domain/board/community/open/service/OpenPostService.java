@@ -32,19 +32,19 @@ public class OpenPostService {
     private final OpenPostRepository openPostRepository;
 
     @Transactional
-    public String create(User user, OpenPostReq req) {
+    public String create(User user, String title, String content, String image) {
 
-        if(req.getTitle() == null){
+        if(title == null){
             throw new BaseException(COMMUNITY_TITLE_NOT_FOUND);
         }
-        if(req.getContent() == null){
+        if(content == null){
             throw new BaseException(COMMUNITY_CONTENT_NOT_FOUND);
         }
         OpenPost openPost = openPostRepository.save(OpenPost.builder()
-                .title(req.getTitle())
-                .content(req.getContent())
+                .title(title)
+                .content(content)
                 .user(user)
-                .image(req.getImage())
+                .image(image)
                 .createdAt(LocalDateTime.now())
                 .build()
         );
@@ -108,15 +108,15 @@ public class OpenPostService {
         return openPostResList;
     }
 
-    public OpenPostRes update(User user, OpenPostUpdateReq req) {
-        OpenPost openPost = openPostRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+    public OpenPostRes update(User user, Long idx, String title, String content, String image) {
+        OpenPost openPost = openPostRepository.findById(idx).orElseThrow(()-> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
         if(openPost.getUser().getIdx()!= user.getIdx()){
             throw new BaseException(COMMUNITY_USER_NOT_AUTHOR);
         }
-        openPost.setTitle(req.getTitle());
-        openPost.setContent(req.getContent());
-        openPost.setImage(req.getImage());
+        openPost.setTitle(title);
+        openPost.setContent(content);
+        openPost.setImage(image);
         openPost.setCreatedAt(LocalDateTime.now());
 
         openPostRepository.save(openPost);

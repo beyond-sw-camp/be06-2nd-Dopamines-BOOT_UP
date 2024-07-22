@@ -8,18 +8,18 @@ import com.example.dopamines.domain.board.community.open.service.OpenPostService
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseResponse;
 import com.example.dopamines.global.security.CustomUserDetails;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,21 +31,108 @@ public class OpenPostController {
     private final OpenPostService openPostService;
 
     @PostMapping("/create")
-    public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody OpenPostReq req){
+    @Operation(
+            summary = "게시글 생성",
+            description = "공개게시판 게시글을 생성합니다.",
+            operationId = "createOpenPost")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "게시글 생성 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = String.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Success Example",
+                                            value = "{" +
+                                                    "\"title\": \"성능 개선은 너무 어려워요\", " +
+                                                    "\"content\": \"집에 가고 시퍼영\", " +
+                                                    "\"author\": \"작성자\", " +
+                                                    "\"createdAt\": \"2021-08-01 00:00:00\", " +
+                                                    "\"likeCount\": 0, " +
+                                                    "\"commentList\": []}"
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "게시글 생성 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = String.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Fail Example",
+                                            value = "0"
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<BaseResponse<?>> create(
+            @Parameter(description = "게시글 제목", required = true, example = "성능 개선은 너무 어려워용") @RequestBody String title,
+            @Parameter(description = "게시글 내용", required = true, example = "어떻게 공부하죠?") @RequestBody String content,
+            @Parameter(description = "게시글 이미지", required = true, example = "게시글 이미지") @RequestBody String image,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails){
         User user = customUserDetails.getUser();
-        String result = openPostService.create(user,req);
+        String result = openPostService.create(user, title, content, image);
         return ResponseEntity.ok(new BaseResponse<>(result));
     }
 
     @GetMapping("/read")
-    public ResponseEntity<BaseResponse<?>> read(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
+    @Operation(
+            summary = "게시글 조회",
+            description = "공개게시판 게시글을 조회합니다.",
+            operationId = "readOpenPost")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "게시글 조회 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = OpenPostReadRes.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Success Example",
+                                            value = "{" +
+                                                    "\"idx\": 1, "
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "게시글 조회 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = OpenPostReadRes.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<BaseResponse<?>> read(
+            @Parameter (description = "게시글 인덱스", required = true, example = "1") @RequestParam Long idx,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails){
         User user = customUserDetails.getUser();
         OpenPostReadRes response = openPostService.read(idx);
-
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
     @GetMapping("/read-all")
+    @Operation(
+            summary = "게시글 전체 조회",
+            description = "공개게시판 게시글을 전체 조회합니다.",
+            operationId = "read")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "게시글 전체 조회 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = OpenPostRes.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "게시글 전체 조회 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = OpenPostRes.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     public ResponseEntity<BaseResponse<?>> readAll(@AuthenticationPrincipal CustomUserDetails customUserDetails,Integer page, Integer size){
         User user = customUserDetails.getUser();
         List<OpenPostRes> response = openPostService.readAll(page,size);
@@ -53,14 +140,99 @@ public class OpenPostController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<BaseResponse<?>> update(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody OpenPostUpdateReq req){
+    @Operation(
+            summary = "게시글 수정",
+            description = "공개게시판 게시글을 수정합니다.",
+            operationId = "update")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "게시글 수정 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = OpenPostRes.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Success Example",
+                                            value = "{" +
+                                                    "\"idx\": 1, " +
+                                                    "\"title\": \"성능 개선은 너무 어려워요\", " +
+                                                    "\"content\": \"집에 가고 싶어요\", " +
+                                                    "\"author\": \"작성자\", " +
+                                                    "\"createdAt\": \"2021-08-01 00:00:00\", " +
+                                                    "\"likeCount\": 0, " +
+                                                    "\"commentList\": []}"
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "게시글 수정 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = OpenPostRes.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Fail Example",
+                                            value = "{" +
+                                                    "\"idx\": 1, " +
+                                                    "\"title\": \"성능 개선은 너무 어려워요\", " +
+                                                    "\"content\": \"집에 가고 싶어요\", " +
+                                                    "\"author\": \"작성자\", " +
+                                                    "\"createdAt\": \"2021-08-01 00:00:00\", " +
+                                                    "\"likeCount\": 0, " +
+                                                    "\"commentList\": []}"
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<BaseResponse<?>> update(
+            @Parameter(description = "게시글 인덱스", required = true, example = "1") @RequestBody Long idx,
+            @Parameter(description = "게시글 제목", required = true, example = "성능 개선은 너무 어려워요") @RequestBody String title,
+            @Parameter(description = "게시글 내용", required = true, example = "집에 가고 싶어요") @RequestBody String content,
+            @Parameter(description = "게시글 이미지", required = true, example = "게시글 이미지") @RequestBody String image,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails){
         User user = customUserDetails.getUser();
-        OpenPostRes response = openPostService.update(user,req);
+        OpenPostRes response = openPostService.update(user,idx,title,content,image);
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<BaseResponse<?>> delete(@AuthenticationPrincipal CustomUserDetails customUserDetails, Long idx){
+    @Operation(
+            summary = "게시글 삭제",
+            description = "공개게시판 게시글을 삭제합니다.",
+            operationId = "delete")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "게시글 삭제 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = String.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Success Example",
+                                            value = "{" +
+                                                    "\"idx\": 1 }"
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "게시글 삭제 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = String.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Fail Example",
+                                            value = "{" +
+                                                    "\"idx\": 1}"
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<BaseResponse<?>> delete(
+            @Parameter(description = "게시글 인덱스", required = true, example = "1") @RequestBody Long idx,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails){
         User user = customUserDetails.getUser();
         String response = openPostService.delete(user,idx);
         return ResponseEntity.ok(new BaseResponse<>(response));

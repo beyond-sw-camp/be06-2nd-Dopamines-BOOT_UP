@@ -30,4 +30,3 @@ public class ChatRoom {
     @JoinColumn(name="market_board_idx")
     private MarketPost marketPost;
 }
-

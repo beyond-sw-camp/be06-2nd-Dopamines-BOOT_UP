@@ -13,6 +13,8 @@ import com.example.dopamines.global.common.annotation.CheckAuthentication;
 import com.example.dopamines.global.infra.s3.CloudFileUploadService;
 import com.example.dopamines.global.security.CustomUserDetails;
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/market")
+@Tag(name = "중고마켓", description = "거래 게시글 관련 API")
 @RequiredArgsConstructor
 public class MarketPostController {
 

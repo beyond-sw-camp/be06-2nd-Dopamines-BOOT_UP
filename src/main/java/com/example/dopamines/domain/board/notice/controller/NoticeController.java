@@ -45,7 +45,9 @@ public class NoticeController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201", description = "공지사항 생성 성공",
-                    content = @Content(schema = @Schema(implementation = NoticeRes.class),
+                    content = @Content(
+                            schema = @Schema(implementation = NoticeRes.class),
+                            mediaType = "application/json",
                             examples = {
                             @ExampleObject(
                                     name = "Success Example",
@@ -60,16 +62,14 @@ public class NoticeController {
                     })),
             @ApiResponse(
                     responseCode = "400", description = "공지사항 생성 실패",
-                    content = @Content(schema = @Schema(implementation = NoticeRes.class),
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = NoticeRes.class),
+                            mediaType = "application/json",
                             examples = {
                             @ExampleObject(
                                     name = "Failure Example",
-                                    value = "{\"" +
-                                            "title\": \"\"," +
-                                            " \"content\": \"\"," +
-                                            " \"category\": \"\"," +
-                                            " \"isPrivate\": false," +
-                                            " \"imageUrls\": []}"
+                                    value = "{\"message\":\"공지사항 조회 실패\"}"
                             )
                     }
                     )),
@@ -100,7 +100,12 @@ public class NoticeController {
                     @ExampleObject(
                             name = "Success Example",
                             value = "{" +
-                                    "\"id\": 1, "
+                                    "\"id\": 1, " +
+                                    "\"title\": \"주말 특강 공지\", " +
+                                    "\"content\": \"다음 주말 헥사고널 아키텍쳐에 대한 특강이 개설됩니다.\", " +
+                                    "\"category\": \"특강 공지\", " +
+                                    "\"isPrivate\": false, " +
+                                    "\"imageUrls\": [\"http://example.com/image1.jpg\", \"http://example.com/image2.jpg\"]}"
                     )
             })),
             @ApiResponse(responseCode = "404", description = "공지사항 조회 실패",
@@ -108,8 +113,7 @@ public class NoticeController {
                     examples = {
                     @ExampleObject(
                             name = "Failure Example",
-                            value = "{\"" +
-                                    "id\": 0, "
+                            value = "{\"message\":\"공지 사항 조회 실패\"}"
                     )
             })),
             @ApiResponse(responseCode = "500", description = "서버 오류")
@@ -139,8 +143,11 @@ public class NoticeController {
                             name = "Success Example",
                             value = "{" +
                                     "\"id\": 1, " +
-                                    "\"page\":1" +
-                                    "\"size\":10"
+                                    "\"title\": \"주말 특강 공지\", " +
+                                    "\"content\": \"다음 주말 헥사고널 아키텍쳐에 대한 특강이 개설됩니다.\", " +
+                                    "\"category\": \"특강 공지\", " +
+                                    "\"isPrivate\": true, " +
+                                    "\"imageUrls\": [\"http://example.com/image1.jpg\", \"http://example.com/image2.jpg\"]}"
                     )
             })),
             @ApiResponse(responseCode = "404", description = "비공개 공지사항 조회 실패",
@@ -148,10 +155,7 @@ public class NoticeController {
                     examples = {
                     @ExampleObject(
                             name = "Failure Example",
-                            value = "{\"" +
-                                    "id\": 0, " +
-                                    "\"page\":10" +
-                                    "\"size\":10"
+                            value = "{\"message\":\"비공개 공지사항 조회 실패\"}"
                     )
             })),
             @ApiResponse(responseCode = "500", description = "서버 오류")
@@ -175,7 +179,7 @@ public class NoticeController {
                                     @ExampleObject(
                                             name = "Success Example",
                                             value = "{" +
-                                                    "\"category\": \"특강 공지\", " +
+                                                    "\"category\": \"행사 안내\", " +
                                                     "\"page\": 1, " +
                                                     "\"size\": 10"
                                     )
@@ -187,10 +191,7 @@ public class NoticeController {
                         examples = {
                                 @ExampleObject(
                                         name = "Failure Example",
-                                        value = "{\"" +
-                                                "category\": \"\", " +
-                                                "page\": 0, " +
-                                                "size\": 0}"
+                                        value = "{\"message\":\"카테고리별 공지사항 조회 실패\"}"
                                 )
                         }
                 )
@@ -228,11 +229,7 @@ public class NoticeController {
                             examples = {
                                     @ExampleObject(
                                             name = "Failure Example",
-                                            value = "{\"" +
-                                                    "startDate\": \"\", " +
-                                                    "\"endDate\": \"\", " +
-                                                    "\"page\": 0, " +
-                                                    "\"size\": 0}"
+                                            value = "{\"message\":\"날짜별 공지사항 조회 실패\"}"
                                     )
                             }
                     )
@@ -264,9 +261,9 @@ public class NoticeController {
                                     @ExampleObject(
                                             name = "Success Example",
                                             value = "{" +
-                                                    "\"isPrivate\": true, " +
-                                                    "\"category\": \"행사 안내\", " +
-                                                    "\"page\": 0, " +
+                                                    "\"isPrivate\": false, " +
+                                                    "\"category\": \"\", " +
+                                                    "\"page\": 1, " +
                                                     "\"size\": 10"
                                     )
                             }
@@ -277,11 +274,7 @@ public class NoticeController {
                             examples = {
                                     @ExampleObject(
                                         name = "Failure Example",
-                                        value = "{\"" +
-                                                "isPrivate\": false, " +
-                                                " \"category\": \"\", " +
-                                                "\"page\": 0, " +
-                                                "\"size\": 0}"
+                                        value = "{\"message\":\"검색 조건에 따른 공지사항 조회 실패\"}"
                             )
                     }
             )),
@@ -321,11 +314,7 @@ public class NoticeController {
                             examples = {
                                     @ExampleObject(
                                             name = "Failure Example",
-                                            value = "{\"" +
-                                                    "title\": \"\", " +
-                                                    "\"content\": \"\", " +
-                                                    "\"page\": 0, " +
-                                                    "\"size\": 0}"
+                                            value = "{\"message\":\"제목 및 내용 검색 실패\"}"
                                     )
                             }
                     )
@@ -367,13 +356,7 @@ public class NoticeController {
                             examples = {
                                     @ExampleObject(
                                             name = "Failure Example",
-                                            value = "{\"" +
-                                                    "id\": 0, " +
-                                                    "\"title\": \"\", " +
-                                                    "\"content\": \"\", " +
-                                                    "\"category\": \"\", " +
-                                                    "\"isPrivate\": false, " +
-                                                    "\"imageUrls\": []}"
+                                            value = "{\"message\":\"공지사항 수정 실패\"}"
                                     )
                             }
                     )
@@ -403,13 +386,7 @@ public class NoticeController {
                             examples = {
                                     @ExampleObject(
                                             name = "Success Example",
-                                            value = "{" +
-                                                    "\"id\": 1, " +
-                                                    "\"title\": \"주말 특강 공지\", " +
-                                                    "\"content\": \"다음 주말 헥사고널 아키텍쳐에 대한 특강이 개설됩니다.\", " +
-                                                    "\"category\": \"특강 공지\", " +
-                                                    "\"isPrivate\": false, " +
-                                                    "\"imageUrls\": [\"http://example.com/image1.jpg\", \"http://example.com/image2.jpg\"]}"
+                                            value = "{\"message\":\"공지사항 삭제 성공\"}"
                                     )
                             }
                     )
@@ -419,13 +396,7 @@ public class NoticeController {
                             examples = {
                                     @ExampleObject(
                                             name = "Failure Example",
-                                            value = "{\"" +
-                                                    "id\": 0, " +
-                                                    "\"title\": \"\", " +
-                                                    "\"content\": \"\", " +
-                                                    "\"category\": \"\", " +
-                                                    "\"isPrivate\": false, " +
-                                                    "\"imageUrls\": []}"
+                                            value = "{\"message\":\"공지사항 삭제 실패\"}"
                                     )
                             }
                     )

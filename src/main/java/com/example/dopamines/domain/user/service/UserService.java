@@ -2,20 +2,18 @@ package com.example.dopamines.domain.user.service;
 
 import com.example.dopamines.domain.user.model.entity.Team;
 import com.example.dopamines.domain.user.model.entity.User;
-import com.example.dopamines.domain.user.model.request.UserSignupRequest;
 import com.example.dopamines.domain.user.model.response.UserSignupResponse;
 import com.example.dopamines.domain.user.repository.TeamRepository;
 import com.example.dopamines.domain.user.repository.UserRepository;
 import com.example.dopamines.global.common.BaseException;
 import com.example.dopamines.global.common.BaseResponseStatus;
-import java.text.SimpleDateFormat;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,16 +27,16 @@ public class UserService {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserSignupResponse signup(UserSignupRequest request) {
+    public UserSignupResponse signup(String email, String password, String name, String nickname, String teamName, String phoneNumber, String address) {
         LocalDateTime localDateTime = LocalDateTime.now();
         localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         User user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(bCryptPasswordEncoder.encode(request.getPassword()))
-                .nickname(request.getNickname())
-                .address(request.getAddress())
-                .phoneNumber(request.getPhoneNumber())
+                .name(name)
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(password))
+                .nickname(nickname)
+                .address(address)
+                .phoneNumber(phoneNumber)
                 .createdAt(localDateTime)
                 .updatedAt(localDateTime)
                 .role("ROLE_TEMPORARY_USER")

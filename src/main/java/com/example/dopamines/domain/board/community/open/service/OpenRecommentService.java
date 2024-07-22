@@ -27,17 +27,17 @@ public class OpenRecommentService {
 
 
     @Transactional
-    public String create(User user, OpenRecommentReq req) {
-        OpenComment openComment = openCommentRepository.findById(req.getCommentIdx()).orElseThrow(()-> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
+    public String create(User user, Long idx, String content) {
+        OpenComment openComment = openCommentRepository.findById(idx).orElseThrow(()-> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
         OpenPost openPost = openPostRepository.findById(openComment.getOpenPost().getIdx()).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
-        if(req.getContent() == null){
+        if(content == null){
             throw new BaseException(COMMUNITY_CONTENT_NOT_FOUND);
         }
 
         openRecommentRepository.save(OpenRecomment.builder()
                 .openComment(openComment)
-                .content(req.getContent())
+                .content(content)
                 .user(user)
                 .createdAt(LocalDateTime.now())
                 .build()
@@ -46,8 +46,8 @@ public class OpenRecommentService {
         return "자유 게시판 대댓글 등록";
     }
 
-    public String update(User user, OpenRecommentUpdateReq req) {
-        OpenRecomment openRecomment = openRecommentRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_RECOMMENT_NOT_FOUND));
+    public String update(User user, Long idx, String content) {
+        OpenRecomment openRecomment = openRecommentRepository.findById(idx).orElseThrow(()-> new BaseException(COMMUNITY_RECOMMENT_NOT_FOUND));
         OpenComment openComment = openCommentRepository.findById(openRecomment.getOpenComment().getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
         OpenPost openPost = openPostRepository.findById(openComment.getOpenPost().getIdx()).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
@@ -55,7 +55,7 @@ public class OpenRecommentService {
             throw  new BaseException(COMMUNITY_USER_NOT_AUTHOR);
         }
         else{
-            openRecomment.setContent(req.getContent());
+            openRecomment.setContent(content);
             openRecomment.setCreatedAt(LocalDateTime.now());
 
             openRecommentRepository.save(openRecomment);

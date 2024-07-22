@@ -25,23 +25,23 @@ public class UserEmailService {
     private final JavaMailSender emailSender;
 
     // 메일을 보내고, UUID를 생성한다.
-    public String sendEmail(UserSignupRequest request){
+    public String sendEmail(String email) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(request.getEmail());
+        message.setTo(email);
         message.setSubject("[도파민즈 사이트] 인증 메일 요청");
 
         String uuid = UUID.randomUUID().toString();
         message.setText("가입을 완료하시려면 아래 링크를 클릭해주세요."
-                + "http://localhost:8080/user/active?email=" + request.getEmail()+"&uuid="+uuid);
+                + "http://localhost:8080/user/active?email=" + email+"&uuid="+uuid);
 
         emailSender.send(message);
 
         return uuid;
     }
 
-    public void save(UserSignupRequest request, String uuid) {
+    public void save(String email, String uuid) {
         UserEmailVerify emailVerify = UserEmailVerify.builder()
-                .email(request.getEmail())
+                .email(email)
                 .uuid(uuid)
                 .build();
 

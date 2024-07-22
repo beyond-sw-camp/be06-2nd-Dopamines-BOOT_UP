@@ -26,16 +26,16 @@ public class OpenCommentService {
     private final OpenPostRepository openPostRepository;
 
     @Transactional
-    public String create(User user, OpenCommentReq req) {
-        OpenPost openPost = openPostRepository.findById(req.getIdx()).orElseThrow(()->new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+    public String create(User user, Long idx, String content) {
+        OpenPost openPost = openPostRepository.findById(idx).orElseThrow(()->new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
-        if(req.getContent() == null){
+        if(content == null){
             throw new BaseException(COMMUNITY_CONTENT_NOT_FOUND);
         }
 
         openCommentRepository.save(OpenComment.builder()
                 .openPost(openPost)
-                .content(req.getContent())
+                .content(content)
                 .user(user)
                 .createdAt(LocalDateTime.now())
                 .build()
@@ -44,8 +44,6 @@ public class OpenCommentService {
         return "자유 게시판 댓글 등록";
     }
 
-    // TODO :  대댓글 조회까지 한번에 처리
-    // TODO : 댓글 좋아요까지 구현 후 성능 테스트
     public List<OpenCommentReadRes> read(User user,Long idx) {
         OpenPost openPost = openPostRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
         List<OpenCommentReadRes> openCommentReadResList = new ArrayList<>();
@@ -63,15 +61,15 @@ public class OpenCommentService {
         return openCommentReadResList;
     }
 
-    public String update(User user, OpenCommentUpdateReq req) {
-        OpenComment openComment = openCommentRepository.findById(req.getIdx()).orElseThrow(()-> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
+    public String update(User user, Long idx, String content) {
+        OpenComment openComment = openCommentRepository.findById(idx).orElseThrow(()-> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
         OpenPost openPost = openPostRepository.findById(openComment.getOpenPost().getIdx()).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
 
         if (openComment.getUser().getIdx() != user.getIdx()){
             throw  new BaseException(COMMUNITY_USER_NOT_AUTHOR);
         }
         else{
-            openComment.setContent(req.getContent());
+            openComment.setContent(content);
             openComment.setCreatedAt(LocalDateTime.now());
 
             openCommentRepository.save(openComment);

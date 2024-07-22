@@ -47,8 +47,8 @@ public class FreePostController {
                                     @ExampleObject(
                                             name = "Success Example",
                                             value = "{" +
-                                                    "\"title\": \"게시글 제목\", " +
-                                                    "\"content\": \"게시글 내용\"" +
+                                                    "\"title\": \"AWS S3 잘 아시는 분?\", " +
+                                                    "\"content\": \"키를 찾는 것이 어려워요 ㅠㅜ\"," +
                                                     "\"files\": \"http://example.com/image2.jpg\"}"
                                     )
                             }
@@ -72,8 +72,8 @@ public class FreePostController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<BaseResponse<?>> create(
-            @Parameter(description = "게시글 제목", required = true, example = "게시글 제목") @RequestParam String title,
-            @Parameter(description = "게시글 내용", required = true, example = "게시글 내용") @RequestParam String content,
+            @Parameter(description = "게시글 제목", required = true, example = "AWS S3 잘 아시는 분?") @RequestParam String title,
+            @Parameter(description = "게시글 내용", required = true, example = "키를 찾는 것이 어려워요 ㅠㅜ") @RequestParam String content,
             @Parameter(description = "게시글 이미지", required = false, example = "http://example.com/image2.jpg") @RequestParam MultipartFile[] files,
             @AuthenticationPrincipal CustomUserDetails customUserDetails){
         User user = customUserDetails.getUser();
