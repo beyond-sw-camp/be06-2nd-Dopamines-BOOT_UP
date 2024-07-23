@@ -14,18 +14,15 @@ import com.example.dopamines.global.infra.s3.CloudFileUploadService;
 import com.example.dopamines.global.security.CustomUserDetails;
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -41,24 +38,80 @@ public class MarketPostController {
 
 
     @PostMapping
+    @Operation(
+            summary = "게시글 작성",
+            description = "중고마켓 게시글을 작성합니다.",
+            operationId = "create"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "게시글 작성 성공"),
+                    @ApiResponse(responseCode = "400", description = "게시글 작성 실패"),
+                    @ApiResponse(responseCode = "401", description = "인증 실패"),
+                    @ApiResponse(responseCode = "403", description = "권한 없음"),
+                    @ApiResponse(responseCode = "404", description = "게시글 없음"),
+                    @ApiResponse(responseCode = "500", description = "서버 오류")
+            }
+    )
     @CheckAuthentication
-    public ResponseEntity<BaseResponse<?>> create(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestPart MultipartFile[] images, @RequestPart MarketCreateReq req) {
+    public ResponseEntity<BaseResponse<?>> create(
+            @Parameter(description = "이미지 url", required = false, example = "image.jpg") @RequestParam MultipartFile[] images,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @Parameter(description = "제목", required = true, example = "딸기쨈 팝니다") @RequestParam String title,
+            @Parameter(description = "내용", required = true, example = "맛있어요") @RequestParam String content,
+            @Parameter(description = "가격", required = true, example = "10000") @RequestParam Integer price
+    ) {
         User user = customUserDetails.getUser();
         List<String> imagePathes = cloudFileUploadService.uploadImages(images, BOARD_TYPE);
-        MarketReadRes post = marketService.add(imagePathes, req, user);
+        MarketReadRes post = marketService.add(imagePathes,  title, content, price, user);
 
         return ResponseEntity.ok(new BaseResponse(post));
     }
 
     @GetMapping
-    public ResponseEntity<BaseResponse<List<MarketReadRes>>> findAll(Integer page, Integer size) {
+    @Operation(
+            summary = "게시글 조회",
+            description = "중고마켓 게시글을 조회합니다.",
+            operationId = "findAll"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "게시글 조회 성공"),
+                    @ApiResponse(responseCode = "400", description = "게시글 조회 실패"),
+                    @ApiResponse(responseCode = "401", description = "인증 실패"),
+                    @ApiResponse(responseCode = "403", description = "권한 없음"),
+                    @ApiResponse(responseCode = "404", description = "게시글 없음"),
+                    @ApiResponse(responseCode = "500", description = "서버 오류")
+            }
+    )
+    public ResponseEntity<BaseResponse<List<MarketReadRes>>> findAll(
+            @Parameter(description = "페이지", required = true, example = "1") @RequestParam Integer page,
+            @Parameter(description = "사이즈", required = true, example = "10") @RequestParam Integer size
+    ) {
         List<MarketReadRes> posts = marketService.findAll(page, size);
         return ResponseEntity.ok(new BaseResponse(posts));
     }
 
     @GetMapping("/{idx}")
-    @CheckAuthentication
-    public ResponseEntity<BaseResponse<MarketDetailRes>> findOne(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable("idx") Long idx) {
+    @Operation(
+            summary = "게시글 상세 조회",
+            description = "중고마켓 게시글을 상세 조회합니다.",
+            operationId = "findOne"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "게시글 상세 조회 성공"),
+                    @ApiResponse(responseCode = "400", description = "게시글 상세 조회 실패"),
+                    @ApiResponse(responseCode = "401", description = "인증 실패"),
+                    @ApiResponse(responseCode = "403", description = "권한 없음"),
+                    @ApiResponse(responseCode = "404", description = "게시글 없음"),
+                    @ApiResponse(responseCode = "500", description = "서버 오류")
+            }
+    )
+    public ResponseEntity<BaseResponse<MarketDetailRes>> findOne(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @Parameter(description = "페이지 인덱스", required = true, example = "1") @PathVariable("idx") Long idx
+    ) {
         User user = customUserDetails.getUser();
         MarketDetailRes post = marketService.findById(idx);
 
@@ -69,20 +122,67 @@ public class MarketPostController {
     }
 
     @GetMapping("/search")
+    @Operation(
+            summary = "게시글 검색",
+            description = "중고마켓 게시글을 검색합니다.",
+            operationId = "search"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "게시글 검색 성공"),
+                    @ApiResponse(responseCode = "400", description = "게시글 검색 실패"),
+                    @ApiResponse(responseCode = "401", description = "인증 실패"),
+                    @ApiResponse(responseCode = "403", description = "권한 없음"),
+                    @ApiResponse(responseCode = "404", description = "게시글 없음"),
+                    @ApiResponse(responseCode = "500", description = "서버 오류")
+            }
+    )
     public ResponseEntity<BaseResponse<List<MarketReadRes>>> search(Integer page, Integer size, String keyword, Integer minPrice, Integer maxPrice) {
         List<MarketReadRes> result = marketService.search(page, size, keyword, minPrice, maxPrice);
         return ResponseEntity.ok(new BaseResponse(result));
     }
 
     @PatchMapping("/{idx}/status")
-    public ResponseEntity updateStatus(@PathVariable("idx") Long idx) {
+    @Operation(
+            summary = "게시글 상태 변경",
+            description = "중고마켓 게시글의 상태를 변경합니다.",
+            operationId = "updateStatus"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "게시글 상태 변경 성공"),
+                    @ApiResponse(responseCode = "400", description = "게시글 상태 변경 실패"),
+                    @ApiResponse(responseCode = "401", description = "인증 실패"),
+                    @ApiResponse(responseCode = "403", description = "권한 없음"),
+                    @ApiResponse(responseCode = "404", description = "게시글 없음"),
+                    @ApiResponse(responseCode = "500", description = "서버 오류")
+            }
+    )
+    public ResponseEntity updateStatus(
+            @Parameter(description = "게시글 인덱스", required = true, example = "1") @PathVariable("idx") Long idx) {
         marketService.updateStatus(idx);
         return ResponseEntity.ok("");
     }
 
     @DeleteMapping("/{idx}")
-    @CheckAuthentication
-    public ResponseEntity<?> delete(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable("idx") Long idx) {
+    @Operation(
+            summary = "게시글 삭제",
+            description = "중고마켓 게시글을 삭제합니다.",
+            operationId = "delete"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "게시글 삭제 성공"),
+                    @ApiResponse(responseCode = "400", description = "게시글 삭제 실패"),
+                    @ApiResponse(responseCode = "401", description = "인증 실패"),
+                    @ApiResponse(responseCode = "403", description = "권한 없음"),
+                    @ApiResponse(responseCode = "404", description = "게시글 없음"),
+                    @ApiResponse(responseCode = "500", description = "서버 오류")
+            }
+    )
+    public ResponseEntity<?> delete(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @Parameter(description = "게시글 인덱스", required = true, example = "1") @PathVariable("idx") Long idx) {
         boolean hasRoleAdmin = customUserDetails.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
 

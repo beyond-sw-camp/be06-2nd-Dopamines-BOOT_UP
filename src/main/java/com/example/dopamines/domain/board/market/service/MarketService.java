@@ -35,9 +35,9 @@ public class MarketService {
     private final MarketPostMapper marketPostMapper;
     private final MarketProductImageMapper marketProductImageMapper;
 
-    public MarketReadRes add(List<String> imageUrls, MarketCreateReq req, User user) {
+    public MarketReadRes add(List<String> imageUrls, String title, String content, Integer price, User user) {
         String mainImage = imageUrls.get(0);
-        MarketPost post = marketPostMapper.toEntity(mainImage, req, user);
+        MarketPost post = marketPostMapper.toEntity(mainImage, user, title, content, price);
         postRepository.save(post);
 
         for (String url : imageUrls) {

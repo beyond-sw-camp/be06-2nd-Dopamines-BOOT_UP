@@ -186,7 +186,8 @@ public class ChatRoomController {
             )
     }
     )
-    public ResponseEntity<BaseResponse<List<ChatRoomRes>>> getChatRoomList(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+    public ResponseEntity<BaseResponse<List<ChatRoomRes>>> getChatRoomList(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails){
         User user = customUserDetails.getUser();
         List<ChatRoomRes> participatedRooms = chatRoomService.findAll(user);
         return ResponseEntity.ok(new BaseResponse<>(participatedRooms));

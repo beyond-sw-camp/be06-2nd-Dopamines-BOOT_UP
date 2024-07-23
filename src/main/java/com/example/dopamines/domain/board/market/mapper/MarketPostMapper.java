@@ -25,7 +25,7 @@ public interface MarketPostMapper {
             @Mapping(target = "updatedAt", expression = "java(LocalDate.now())"),
             @Mapping(target = "status", constant = "false")
     })
-    MarketPost toEntity(String mainImage, MarketCreateReq dto, User user);
+    MarketPost toEntity(String mainImage, User user, String title, String content, Integer price);
 
     MarketReadRes toDto(MarketPost entity, String author);
     @Mapping(source = "entity.images", target = "images")

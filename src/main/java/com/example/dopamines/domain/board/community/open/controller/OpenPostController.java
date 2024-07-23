@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ import java.util.List;
 public class OpenPostController {
     private final OpenPostService openPostService;
 
-    @PostMapping("/create")
+    @PostMapping("/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             summary = "게시글 생성",
             description = "공개게시판 게시글을 생성합니다.",
@@ -69,9 +70,9 @@ public class OpenPostController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<BaseResponse<?>> create(
-            @Parameter(description = "게시글 제목", required = true, example = "성능 개선은 너무 어려워용") @RequestBody String title,
-            @Parameter(description = "게시글 내용", required = true, example = "어떻게 공부하죠?") @RequestBody String content,
-            @Parameter(description = "게시글 이미지", required = true, example = "게시글 이미지") @RequestBody String image,
+            @Parameter(description = "게시글 제목", required = true, example = "성능 개선은 너무 어려워용") @RequestParam String title,
+            @Parameter(description = "게시글 내용", required = true, example = "어떻게 공부하죠?") @RequestParam String content,
+            @Parameter(description = "게시글 이미지", required = true, example = "게시글 이미지") @RequestParam String image,
             @AuthenticationPrincipal CustomUserDetails customUserDetails){
         User user = customUserDetails.getUser();
         String result = openPostService.create(user, title, content, image);
