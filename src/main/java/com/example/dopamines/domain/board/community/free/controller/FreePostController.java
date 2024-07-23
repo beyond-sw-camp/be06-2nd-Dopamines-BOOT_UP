@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ import java.util.List;
 
 @RestController
 @Tag(name = "자유게시판", description = "자유게시판 API")
-@RequestMapping("/free/post")
+@RequestMapping(value = "/free/post",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 @RequiredArgsConstructor
 public class FreePostController {
     private final FreePostService freePostService;
@@ -74,7 +75,7 @@ public class FreePostController {
     public ResponseEntity<BaseResponse<?>> create(
             @Parameter(description = "게시글 제목", required = true, example = "AWS S3 잘 아시는 분?") @RequestParam String title,
             @Parameter(description = "게시글 내용", required = true, example = "키를 찾는 것이 어려워요 ㅠㅜ") @RequestParam String content,
-            @Parameter(description = "게시글 이미지", required = false, example = "http://example.com/image2.jpg") @RequestParam MultipartFile[] files,
+            @Parameter(description = "게시글 이미지", required = false, example = "http://example.com/image2.jpg") @RequestPart MultipartFile[] files,
             @AuthenticationPrincipal CustomUserDetails customUserDetails){
         User user = customUserDetails.getUser();
         String rootType ="FREEBOARD";

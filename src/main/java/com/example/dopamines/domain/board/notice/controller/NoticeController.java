@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @Tag(name = "공지사항", description = "공지사항 관련 API")
-@RequestMapping("/notices")
+@RequestMapping(value = "/notices",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 public class NoticeController {
 
     @Autowired
