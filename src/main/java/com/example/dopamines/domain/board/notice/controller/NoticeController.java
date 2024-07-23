@@ -80,10 +80,10 @@ public class NoticeController {
             @Parameter(description = "내용", required = true, example = "아래 폼을 작성하면 응시 확인이 가능합니다.") @RequestParam String content,
             @Parameter(description = "카테고리", required = true, example = "행사 안내") @RequestParam String category,
             @Parameter(description = "공개 여부", required = true, example = "true") @RequestParam Boolean isPrivate,
-            @Parameter(description = "이미지 URL", required = false, example = "http://example.com/image1.jpg") @RequestParam(required = false) MultipartFile[] imageUrls
+            @RequestPart MultipartFile[] images
     ) {
         BaseResponse<NoticeRes> createdNotice = noticeService.saveNotice(title, content, category, isPrivate,
-                Arrays.toString(imageUrls));
+                Arrays.toString(images));
         return ResponseEntity.status(HttpStatus.CREATED).body(createdNotice);
     }
 

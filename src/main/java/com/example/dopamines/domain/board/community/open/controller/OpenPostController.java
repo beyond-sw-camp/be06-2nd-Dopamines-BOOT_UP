@@ -7,6 +7,7 @@ import com.example.dopamines.domain.board.community.open.model.response.OpenPost
 import com.example.dopamines.domain.board.community.open.service.OpenPostService;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseResponse;
+import com.example.dopamines.global.infra.s3.CloudFileUploadService;
 import com.example.dopamines.global.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,7 +22,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -30,8 +33,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OpenPostController {
     private final OpenPostService openPostService;
+    private final CloudFileUploadService cloudFileUploadService;
 
-    @PostMapping("/create")
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(
             summary = "게시글 생성",
             description = "공개게시판 게시글을 생성합니다.",
@@ -44,13 +48,7 @@ public class OpenPostController {
                             examples = {
                                     @ExampleObject(
                                             name = "Success Example",
-                                            value = "{" +
-                                                    "\"title\": \"성능 개선은 너무 어려워요\", " +
-                                                    "\"content\": \"집에 가고 시퍼영\", " +
-                                                    "\"author\": \"작성자\", " +
-                                                    "\"createdAt\": \"2021-08-01 00:00:00\", " +
-                                                    "\"likeCount\": 0, " +
-                                                    "\"commentList\": []}"
+                                            value = "{\"message\":\"게시글이 성공적으로 생성되었습니다.\"}"
                                     )
                             }
                     )
@@ -62,7 +60,7 @@ public class OpenPostController {
                             examples = {
                                     @ExampleObject(
                                             name = "Fail Example",
-                                            value = "0"
+                                            value = "{\"message\":\"게시글 생성에 실패하였습니다.\"}"
                                     )
                             }
                     )
@@ -70,12 +68,12 @@ public class OpenPostController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<BaseResponse<?>> create(
-            @Parameter(description = "게시글 제목", required = true, example = "성능 개선은 너무 어려워용") @RequestParam String title,
-            @Parameter(description = "게시글 내용", required = true, example = "어떻게 공부하죠?") @RequestParam String content,
-            @Parameter(description = "게시글 이미지", required = true, example = "게시글 이미지") @RequestParam String image,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails){
+            @Parameter(description = "게시글 제목", required = true) @RequestParam String title,
+            @Parameter(description = "게시글 내용", required = true) @RequestParam String content, @RequestPart MultipartFile[] images,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         User user = customUserDetails.getUser();
-        String result = openPostService.create(user, title, content, image);
+        List<String> uploadImgUrl = cloudFileUploadService.uploadImages(images, "Open");
+        String result = openPostService.create(user, title, content, uploadImgUrl.isEmpty() ? null : uploadImgUrl.get(0));
         return ResponseEntity.ok(new BaseResponse<>(result));
     }
 
