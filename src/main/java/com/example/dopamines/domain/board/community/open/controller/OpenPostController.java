@@ -31,7 +31,7 @@ import java.util.List;
 public class OpenPostController {
     private final OpenPostService openPostService;
 
-    @PostMapping("/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/create")
     @Operation(
             summary = "게시글 생성",
             description = "공개게시판 게시글을 생성합니다.",
