@@ -11,6 +11,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
@@ -69,9 +70,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String token = jwtUtil.createToken(idx, username,role,nickname);
         System.out.println(token);
 
-        response.addHeader("Authorization","Bearer " + token);
+//        response.addHeader("Authorization","Bearer " + token);
+//        PrintWriter out = response.getWriter();
+//        out.println("{\"isSuccess\": true, \"accessToken\": \"" + token + "\"}");
 
-        Cookie jwtToken = new Cookie("JwtToken", token);
-        response.addCookie(jwtToken);
+        // JWT Token
+        Cookie cookie = new Cookie("ATOKEN", token);
+//        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        response.addCookie(cookie);
     }
 }
