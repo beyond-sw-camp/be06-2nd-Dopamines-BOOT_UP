@@ -4,54 +4,77 @@ import com.example.dopamines.domain.board.community.free.model.entity.*;
 import com.example.dopamines.domain.board.community.free.repository.*;
 import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.global.common.BaseException;
+import com.example.dopamines.global.common.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.dopamines.global.common.BaseResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
 public class FreeLikeService {
-    private final FreeLikeRepository freeLikeRepository;
-    private final FreeBoardRepository freeBoardRepository;
+    private final FreePostLikeRepository freePostLikeRepository;
+    private final FreePostRepository freePostRepository;
     private final FreeCommentLikeRepository freeCommentLikeRepository;
     private final FreeCommentRepository freeCommentRepository;
     private final FreeRecommentRepository freeRecommentRepository;
     private final FreeRecommentLikeRepository freeRecommentLikeRepository;
 
 
-    public String createFreeBoardLike(User user, Long idx) {
-        Optional<FreeLike> result = freeLikeRepository.findByUserAndFreeBoard(user.getIdx(),idx);
-        FreeLike freeLike;
+    @Transactional
+    public String createFreePostLike(User user, Long idx) {
+        FreePost freePost = freePostRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
+
+        Optional<FreePostLike> result = freePostLikeRepository.findByUserAndFreePost(user.getIdx(), idx);
+               // .orElseThrow(() -> new BaseException(BaseResponseStatus.COMMUNITY_POST_LIKE_FAILED));
+        FreePostLike freePostLike = null;
 
         if(result.isPresent()){ // 이미 좋아요한 경우
-            freeLike= result.get();
-            freeLikeRepository.delete(freeLike);
+            freePostLike = result.get();
+            freePostLikeRepository.delete(freePostLike);
+
+            freePost.subLikesCount();
+            freePostRepository.save(freePost);
+
             return "자유 게시글 좋아요 취소";
         }
 
-        FreeBoard freeBoard = freeBoardRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_BOARD_NOT_FOUND));
-        freeLike = FreeLike.builder()
+
+        freePost.addLikesCount();
+        freePostRepository.save(freePost);
+
+        freePostLike = FreePostLike.builder()
                 .user(user)
-                .freeBoard(freeBoard)
+                .freePost(freePost)
                 .build();
-        freeLikeRepository.save(freeLike);
+        freePostLikeRepository.save(freePostLike);
         return "자유 게시글 좋아요 등록";
     }
 
+    @Transactional
     public String createCommentLike(User user, Long idx) {
+        FreeComment freeComment = freeCommentRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
+
         Optional<FreeCommentLike> result = freeCommentLikeRepository.findByUserAndIdx(user.getIdx(),idx);
-        FreeCommentLike freeCommentLike;
+        FreeCommentLike freeCommentLike = null;
 
         if(result.isPresent()){ // 이미 좋아요한 경우
-            freeCommentLike= result.get();
+            freeCommentLike = result.get();
             freeCommentLikeRepository.delete(freeCommentLike);
+
+            freeComment.subLikesCount();
+            freeCommentRepository.save(freeComment);
+
             return "자유 게시글 댓글 좋아요 취소";
         }
 
-        FreeComment freeComment = freeCommentRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_COMMENT_NOT_FOUND));
+        freeComment.addLikesCount();
+        freeCommentRepository.save(freeComment);
+
+
         freeCommentLike = FreeCommentLike.builder()
                 .user(user)
                 .freeComment(freeComment)
@@ -60,17 +83,27 @@ public class FreeLikeService {
         return "자유 게시글 댓글 좋아요 등록";
     }
 
+    @Transactional
     public String createRecommentLike(User user, Long idx) {
+        FreeRecomment freeRecomment = freeRecommentRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_RECOMMENT_NOT_FOUND));
+
         Optional<FreeRecommentLike> result = freeRecommentLikeRepository.findByUserAndIdx(user.getIdx(),idx);
-        FreeRecommentLike freeRecommentLike;
+        FreeRecommentLike freeRecommentLike = null;
 
         if(result.isPresent()){ // 이미 좋아요한 경우
-            freeRecommentLike= result.get();
+            freeRecommentLike = result.get();
             freeRecommentLikeRepository.delete(freeRecommentLike);
+
+            freeRecomment.subLikesCount();
+            freeRecommentRepository.save(freeRecomment);
+
             return "자유 게시글 대댓글 좋아요 취소";
         }
 
-        FreeRecomment freeRecomment = freeRecommentRepository.findById(idx).orElseThrow(() -> new BaseException(COMMUNITY_RECOMMENT_NOT_FOUND));
+        freeRecomment.addLikesCount();
+        freeRecommentRepository.save(freeRecomment);
+
+
         freeRecommentLike = FreeRecommentLike.builder()
                 .user(user)
                 .freeRecomment(freeRecomment)

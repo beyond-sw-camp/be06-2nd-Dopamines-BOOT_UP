@@ -1,8 +1,7 @@
 package com.example.dopamines.domain.user.service;
 
-import com.example.dopamines.domain.user.model.entity.User;
 import com.example.dopamines.domain.user.model.entity.UserEmailVerify;
-import com.example.dopamines.domain.user.model.request.UserSignupRequest;
+import com.example.dopamines.domain.user.model.request.UserSignupReq;
 import com.example.dopamines.domain.user.repository.UserEmailVerifyRepository;
 import com.example.dopamines.domain.user.repository.UserRepository;
 import com.example.dopamines.global.common.BaseException;
@@ -25,21 +24,21 @@ public class UserEmailService {
     private final JavaMailSender emailSender;
 
     // 메일을 보내고, UUID를 생성한다.
-    public String sendEmail(UserSignupRequest request){
+    public String sendEmail(UserSignupReq request){
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(request.getEmail());
         message.setSubject("[도파민즈 사이트] 인증 메일 요청");
 
         String uuid = UUID.randomUUID().toString();
         message.setText("가입을 완료하시려면 아래 링크를 클릭해주세요."
-                + "http://localhost:8080/user/active?email=" + request.getEmail()+"&uuid="+uuid);
+                + "http://3.36.99.28:8080/user/active?email=" + request.getEmail()+"&uuid="+uuid);
 
         emailSender.send(message);
 
         return uuid;
     }
 
-    public void save(UserSignupRequest request, String uuid) {
+    public void save(UserSignupReq request, String uuid) {
         UserEmailVerify emailVerify = UserEmailVerify.builder()
                 .email(request.getEmail())
                 .uuid(uuid)
